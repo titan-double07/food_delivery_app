@@ -1,11 +1,26 @@
-import { Text, View } from "react-native";
+import Header from "@/components/home-screen/Header";
+import { offers } from "@/constants";
+import { FlatList, Pressable, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
     return (
-        <View className="flex-1 items-center justify-center bg-white ">
-            <Text className="text-xl font-quicksand-bold  text-primary ">
-                Welcome to Nativewind!
-            </Text>
-        </View>
+        <SafeAreaView>
+            
+            <FlatList
+                ListHeaderComponent={<Header />}
+                data={offers}
+                renderItem={({item}) => {
+                    return (
+                        <View>
+                            <Pressable className="offer-card" style={{backgroundColor:item.color}}>
+
+                            </Pressable>
+                        </View>
+                    )
+                }}
+
+            />
+        </SafeAreaView>
     )
 }

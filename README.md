@@ -48,3 +48,114 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+### Home page
+
+## Body
+
+To implement any screen we need to wrap our screen with SafeAreaView from react-native-safe-area-context. this will help us to avoid the notches and status bar in our screen.
+
+```js
+import { SafeAreaView } from "react-native-safe-area-context";
+<SafeAreaView></SafeAreaView>;
+```
+
+To efficiently render large lists of data, we use FlatList from react-native. It only renders the items that are currently visible on the screen, improving performance and reducing memory usage. simiar to the map function in javascript
+
+```js
+// reder the list of  food offers
+import { FlatList } from "react-native";
+import offers from "constants/offers";
+<FlatList
+  data={offers}
+  keyExtractor={(item) => item.id.toString()}
+  renderItem={({ item }) => (
+    // Render each item here
+    <Text>{item.title}</Text>
+  )}
+  contentContainerClassName="" 
+  ListHeaderComponent=""
+  
+  />
+```
+
+To make any component pressable or clickable we use Pressable from react-native. it provides a way to handle touch interactions and can be styled to provide visual feedback when pressed.
+
+```js
+import { Pressable, View } from "react-native";
+<View>
+  <Pressable 
+  className="offer-card" 
+  style={{ backgroundColor: item.color }}
+  android_ripple={{ color: item.color }} // this is for android, to add ripple effect on press 
+  >
+   {
+      ({ pressed }) => ( //dynamic styling based on press state???
+         <>
+         <View>
+
+         </View>
+         </>
+      )
+   }
+  </Pressable>
+</View>;
+'offer-card__info' // for card text
+```
+questions:
+- can we use the cn utility class in react native?, so that we can merge multiple class names into a single string.
+
+## Header
+ ```js
+ 'small-bold' // for small text (dropdown text)
+ <TouchableOpacity>
+ <Image 
+ source={image.arrowDown}
+ resizeMode='contain'// it resizes the image to fit the container, Q: can the tailwind class be used here?
+   />
+ </TouchableOpacity> // this is a button (dropdown button)
+ <Cart/> // create a cart component 
+ ```
+ ### cart component
+ ```js
+
+ <TouchableOpacity 
+ className="cart-btn" 
+ onPress={() => navigation.navigate('Cart')} // Q: why not use Pressable here?, 
+ >
+ <Image 
+ source={image.cart}
+ resizeMode='contain'// it resizes the image to fit the container, Q: can the tailwind class be used here?
+   />
+   <View className="cart-badge"/>
+ </TouchableOpacity>
+ ```
+
+ Note: 
+ -  if you wish to add horizontal or vertical scrolls you MUST explicitly wrap the content inside a ScrollView or FlatList component.
+
+ - you cannot/should not wrap a FlatList inside a ScrollView component, as the FlatList handles its own scrolling and the ScrollView would override it. instead you can add a ListHeader property to the FlatList to add a header to the list.
+
+ ## Bootom Nav
+
+ ### Routing
+ - set up the routes for the bottom navigation bar and authentication (login, signup, forgot password)
+
+ - make use of expo's Shared Route feature to group / share routes with similar layouts 
+ (auth)
+ - _layout
+ - login
+ - signup
+
+ (tabs)
+ - _layout: <Slot/> //  this is the layout for the tabs
+ - cart
+ - profile
+ - search 
+
+
+
+
+
+
+  
