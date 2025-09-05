@@ -8,3 +8,5 @@ cssInterop(RNImage, {
 });
 
 export { RNImage as Image };
+
+export default RNImage;
