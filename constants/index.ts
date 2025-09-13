@@ -40,6 +40,7 @@ import pizzaOne from "@/assets/images/pizza-one.png";
 import salad from "@/assets/images/salad.png";
 import success from "@/assets/images/success.png";
 import tomatoes from "@/assets/images/tomatoes.png";
+import signUpGraphic from "@/assets/images/hand_holding_burger.png";
 
 export const CATEGORIES = [
   {
@@ -170,6 +171,7 @@ export const images = {
   emptyState,
   fries,
   loginGraphic,
+  signUpGraphic,
   logo,
   mozarellaSticks,
   mushrooms,

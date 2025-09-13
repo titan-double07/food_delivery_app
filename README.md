@@ -49,35 +49,102 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
+## Auth Screen
 
+- in layout instead of <SafeAreaView> will make use of a <KeyboardAvoidingView> to avoid the keyboard from covering the input fields.
 
- ## Bootom Nav
+- to be able to add a device specific behaviour to a component you can set the behaviour prop making use of Platform.OS.
 
- ### Routing
- - set up the routes for the bottom navigation bar and authentication (login, signup, forgot password)
+```jsx
+// create auth layout
+<KeyboardAvoidingView
+  style={{ flex: 1 }}
+  behavior={Platform.OS === "ios" ? "padding" : "height"} // this was added due to a different behaviour in android vs ios , where we have to add a padding on ios devices to push the conent up, while we need to add height on android
+  keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+>
+  <ScrollView
+  keyboardShouldPersistTaps="handled" // this is used dismiss the keyboard when the user taps outside the input fields
+  >
+  <View className="w-full relative"
+  style={
+   height: Dimensions.get("screen").height // this is used to set the height of the view to the height of the screen
+  }
+  >
+  <ImageBackground source={images.loginGrapic} resizeMode="cover">
+  <Image source={images.logo} resizeMode="contain" className="absolute top-20 left-1/2 -translate-x-1/2" />
+ 
+  </View>
+<Slot />
 
- - make use of expo's Shared Route feature to group / share routes with similar layouts 
- (auth)
- - _layout
- - signin
- - signup
-
- (tabs)
- move index to tabs
- - _layout: <Slot/> //this is the layout for the tabs
-  - add dummy auth check to redirect to authscreen if not logged in
-  - <Redirect href='/sign-in'> 
- - cart
- - profile
- - search 
-
-```js
-<Slot /> //this is used to render the children of the route
-<Button title="Sign In" onPress={() => router.push("/sign-up")} />
-// why button over TouchableOpacity? 
+  </ScrollView>
+</KeyboardAvoidingView>
 ```
 
+-create the reuseable CustomInput component, That takes the props for placeholder, value, onChangeText, label, secureTextEntry and keyboardType (create type prop; this can be gotten from the type.d.ts file from Tutorial assets)
+? can we automatically import the TextInput types from react-native to make the code more readable?
+
+```jsx
+export default function CustomInput({ placeholder, value, onChangeText, label, secureTextEntry, keyboardType }: CustomInputProps) {
+
+  const [isFocused, setIsFocused] = useState(false); // this is used to check if the input field is focused
+
+  return(
+    <View className="w-full">
+      <Text className="text-gray-400 mb-2">{label}</Text>
+      <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType}
+        placeholderTextColor="#888"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}  // this is used to check if the input field is focused
+        className={cn(`input`,
+          isFocused ? "border-blue-500" : "border-gray-300"
+        )}
+
+      />
+    </View>
+  )
+}
+
+```
+
+- create the reuseable CustomButton component, That takes the props for text, onPress, title, style, leftIcon, textStyle, isLoading (create type prop; this can be gotten from the type.d.ts file from Tutorial assets)
+```jsx
+export default function CustomButton({ onPress, title, style, leftIcon, textStyle, isLoading }: CustomButtonProps) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      className={cn("custom-btn", style)}
+      disabled={isLoading}
+    >
+      {leftIcon}
+
+      <View className="flex-1">
+      {
+        isLoading ? (
+          <ActivityIndicator size="small" color="white" />
+        ):
+      <Text className={cn("text-white-100 paragraph-semibold", textStyle)}>
+      {title}
+      </Text>
+      }
+      </View>
+    </TouchableOpacity>
+  );
+}
+```
+
+- create sign in page
+  - create state for isSubmitting and form (email, password)
+  - create a function that handles the form submission, it would show an Alert if the form is invalid
+  - create a function that handles the form validation
+
+```jsx
 
 
-
-  
+```
