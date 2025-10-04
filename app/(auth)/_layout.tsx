@@ -1,6 +1,7 @@
 import { images } from "@/constants";
+import { useAuthStore } from "@/store/auth.store";
 import { useRoute } from "@react-navigation/native";
-import { Slot, usePathname } from "expo-router";
+import { Redirect, Slot, usePathname } from "expo-router";
 import React from "react";
 import {
   Dimensions,
@@ -14,7 +15,11 @@ import {
 
 export default function AuthLayout() {
   const pathname = usePathname();
-  console.log("🚀 ~ AuthLayout ~ pathname:", pathname)
+  const { isAuthenticated } = useAuthStore();
+
+  if (isAuthenticated) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <KeyboardAvoidingView
@@ -22,7 +27,10 @@ export default function AuthLayout() {
       behavior={Platform.OS === "ios" ? "padding" : "height"} // this was added due to a different behaviour in android vs ios , where we have to add a padding on ios devices to push the conent up, while we need to add height on android
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
-      <ScrollView>
+      <ScrollView
+        className="h-full bg-white"
+        keyboardShouldPersistTaps="handled"
+      >
         <View
           style={{ height: Dimensions.get("screen").height }}
           className={`relative w-full   `}

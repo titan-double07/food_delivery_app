@@ -49,102 +49,164 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
-## Auth Screen
+## Auth Funtionality
 
-- in layout instead of <SafeAreaView> will make use of a <KeyboardAvoidingView> to avoid the keyboard from covering the input fields.
+-  create a function that creates a new user account, their session and also stores them within the database as soon as they create an account. 
 
-- to be able to add a device specific behaviour to a component you can set the behaviour prop making use of Platform.OS.
-
-```jsx
-// create auth layout
-<KeyboardAvoidingView
-  style={{ flex: 1 }}
-  behavior={Platform.OS === "ios" ? "padding" : "height"} // this was added due to a different behaviour in android vs ios , where we have to add a padding on ios devices to push the conent up, while we need to add height on android
-  keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
->
-  <ScrollView
-  keyboardShouldPersistTaps="handled" // this is used dismiss the keyboard when the user taps outside the input fields
-  >
-  <View className="w-full relative"
-  style={
-   height: Dimensions.get("screen").height // this is used to set the height of the view to the height of the screen
-  }
-  >
-  <ImageBackground source={images.loginGrapic} resizeMode="cover">
-  <Image source={images.logo} resizeMode="contain" className="absolute top-20 left-1/2 -translate-x-1/2" />
- 
-  </View>
-<Slot />
-
-  </ScrollView>
-</KeyboardAvoidingView>
-```
-
--create the reuseable CustomInput component, That takes the props for placeholder, value, onChangeText, label, secureTextEntry and keyboardType (create type prop; this can be gotten from the type.d.ts file from Tutorial assets)
-? can we automatically import the TextInput types from react-native to make the code more readable?
-
-```jsx
-export default function CustomInput({ placeholder, value, onChangeText, label, secureTextEntry, keyboardType }: CustomInputProps) {
-
-  const [isFocused, setIsFocused] = useState(false); // this is used to check if the input field is focused
-
-  return(
-    <View className="w-full">
-      <Text className="text-gray-400 mb-2">{label}</Text>
-      <TextInput
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secureTextEntry}
-        keyboardType={keyboardType}
-        placeholderTextColor="#888"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}  // this is used to check if the input field is focused
-        className={cn(`input`,
-          isFocused ? "border-blue-500" : "border-gray-300"
-        )}
-
-      />
-    </View>
-  )
-}
+### to do this 
+- create a new app router client and configuration
+```tsx
+// in the appwrite file in lib folder
+export const client = new Appwrite();
+client
+  .setEndpoint()
+  .setProject()
+  .setPlatform();
 
 ```
 
-- create the reuseable CustomButton component, That takes the props for text, onPress, title, style, leftIcon, textStyle, isLoading (create type prop; this can be gotten from the type.d.ts file from Tutorial assets)
-```jsx
-export default function CustomButton({ onPress, title, style, leftIcon, textStyle, isLoading }: CustomButtonProps) {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      className={cn("custom-btn", style)}
-      disabled={isLoading}
-    >
-      {leftIcon}
 
-      <View className="flex-1">
-      {
-        isLoading ? (
-          <ActivityIndicator size="small" color="white" />
-        ):
-      <Text className={cn("text-white-100 paragraph-semibold", textStyle)}>
-      {title}
-      </Text>
+- set up different appwrite functionalities
+
+```tsx
+// in the appwrite file in lib folder
+export const account = new Account(client);
+export const database = new Databases(client);
+export const avatars= new Avatars(client);
+```
+
+- define create user function as well  as signin function
+
+```tsx
+// in the appwrite file in lib folder
+export const createUser = async ({email, password, name}:CreateUserParams) => {
+  try {
+    const newAccount = await account.create(userId:ID.unique(), email:email, password:password, name:name);
+    if(!newAccount) throw new Error("Failed to create user");
+
+    await signInUser(email, password);
+
+    const avatarUrl = await avatars.getInitialsURL(name); // used by appwrite to create an avatar for the user using their name
+
+    const newUser = await database.createDocument(
+      databaseId, // in config
+      collectionId, //inn sonfig
+      ID.unique(),
+      data:{
+        accountId: newAccount.$id, 
+        name,
+        email,
+        avatarUrl,
       }
-      </View>
-    </TouchableOpacity>
-  );
-}
+    )
+    
+  }catch(error) {
+    throw new Error(error);
+  }
+
+};
+
+export const signInUser = async (email: string, password: string) => {
+  try {
+    // create a session
+    const session = await account.createEmailPasswordSession(email, password);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 ```
 
-- create sign in page
-  - create state for isSubmitting and form (email, password)
-  - create a function that handles the form submission, it would show an Alert if the form is invalid
-  - create a function that handles the form validation
+- in the signup screen call the create user function
+  - for the function to work you might need to enable permissions in appwrite
 
-```jsx
+- in the login screen call the sign in function
 
+- in the appwrite file in lib folder, write a function to get the details of the logged in user
+  - save the user details in a global state
+
+### Note you need to eneble the permissions on the database in your appwrite dashboard
+
+- use a share state (Zustand store) to store the user authenticatied state
+in Auth store
+  - isAuthenticated : boolean
+  - user : User
+  - isLoading : boolean
+  - setIsAuthenticated : (isAuthenticated: boolean) => void
+  - setUser : (user: User) => void
+  - setIsLoading : (isLoading: boolean) => void
+  - fetchAuthenticatedUser: () => Promise<void>
+
+  - in the root of the app get the isLoading and fetchAuthenticatedUser from the store,
+  use a useEffect to call the function and return null if  fontsLoaded and isLoading is false
+
+  - in AuthLLayout redirect to the home page if the user is authenticated (get from store)
+
+## Tab Navigation
+
+AIM: to create a bottom tab navigation with 4 tabs (home, search, cart, profile)
+
+- To crete the tabs navigation
+  - use the Tabs.Screen component from expo-router, and include the props
+    - name : string
+    - options : object
+      - title : string
+      - tabBarIcon : ({color, size}) => React.ReactNode (Crete a custom TabBarIcon component that takes in focused, icon, title )
+      used the focused state to set tint color;
+      render the icon using image component and the title using text component
+Caveat: the tabs would display both custom component (icon and title) but the default text would still be there
+  - to remove the default text use in the <Tabs> component set the screenOptions = {{tabBarShowLabel: false, headerShown: false }}
+
+- to style the tab bar
+  - use the screenOptions prop in the <Tabs> component
+  - set the tabBarStyle : {position: 'absolute', bottom: 10, left: 10, right: 10, elevation: 0, backgroundColor: 'white', borderRadius: 15, height: 60, ...styles.shadow}
+  - create a shadow style in a styles object
+ 
+
+```tsx
+//in the (tabs) folder 
+<Tabs>
+
+</Tabs>
 
 ```
+
+## Database Architecture 
+
+- when thinking/designing the database architecture, think in terms of a real restaurant or how similar apps work, think of the entities and their relationships, for example in a food delivery app, you would have the following entities
+  - users
+  - restaurants
+  - menu items
+  - orders
+  - reviews
+  - categories
+  - cart
+  - payments
+
+- in Appwrite dashboard, databases (allow permissions for USers) and add each collections id to the config file in lib folder
+  - create a new collection for categories, fields: 
+    - name (string,size:100, required: true), description (string, size: 500, required: false)
+
+  - create a new collection for menu, fields:
+    - name (string,size:100, required: true), 
+    description (string, size: 2000, required: truee), 
+    imageUrl (URL, required: false), 
+    price (float, min: 1, max: 10000, required: true), 
+    rating (float, min: 1, max: 5 , required: true), 
+    calories (integer, min: 1, max: 1000, required: true),
+    protein (integer, min: 1, max: 1000, required: true),
+
+    - we then need to create a two way relationship between menu and categories, the relation would be many to one,ie menu can belong to one category, but a category can have many menu items
+
+  - Since most food items come with optional choices like extra cheese, fries, coke etc, we need to create a new collection for customizations, fields:
+    - name (string,size:100, required: true),
+    price (float, min: 1, max: 10000, required: true),
+    type (enum, options: ['topping', 'side', 'drink', 'sauce'], required: true)
+
+  - We now have to take note of the relationship between menu and customizations, the relationship would be many to many, ie a menu item can have many customizations, and a customization can belong to many menu items
+    - to achieve this we would create a new collection called menu_customizations that will contain a pair of references , fields:
+      - 2 way relationship btw menu and menu_customizations (one to many, ie a menu item can have many menu_customizations, but a menu_customization belongs to one menu item)
+      - 2 way relationship btw customizations and menu_customizations (one to many, ie a customization can have many menu_customizations, but a menu_customization belongs to one customization)
+
+
+
+

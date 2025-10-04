@@ -1,9 +1,11 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { useAuthStore } from "@/store/auth.store";
 import { Redirect, Slot } from "expo-router";
+import React from "react";
+import { Text, View } from "react-native";
 
 export default function HomeLayout() {
-  const isAuthenticated = false;
+  const { isAuthenticated } = useAuthStore();
+  console.log("🚀 ~ HomeLayout ~ isAuthenticated:", isAuthenticated)
 
   if (!isAuthenticated) {
     return <Redirect href="/(auth)/sign-in" />;

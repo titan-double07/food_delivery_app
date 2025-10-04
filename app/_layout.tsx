@@ -4,10 +4,13 @@ import "./global.css";
 
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
+import { useAuthStore } from "@/store/auth.store";
 
 // Prevent auto-hiding the splash until fonts are ready
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
+  const { isLoading, fetchAuthenticatedUser } = useAuthStore();
+
   // this is used to load the fonts
   const [fontsLoaded, fontError] = useFonts({
     Quicksand: require("../assets/fonts/Quicksand-Regular.ttf"),
@@ -30,7 +33,11 @@ export default function RootLayout() {
     }
   });
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    fetchAuthenticatedUser();
+  }, []);
+
+  if (!fontsLoaded || isLoading) {
     return null; // don't render UI until fonts are ready
   }
 

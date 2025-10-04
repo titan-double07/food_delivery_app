@@ -84,24 +84,24 @@ interface CustomInputProps {
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
 }
 
-interface ProfileFieldProps {
+export interface ProfileFieldProps {
   label: string;
   value: string;
   icon: ImageSourcePropType;
 }
 
-interface CreateUserParams {
+export interface CreateUserParams {
   email: string;
   password: string;
   name: string;
 }
 
-interface SignInParams {
+export interface SignInParams {
   email: string;
   password: string;
 }
 
-interface GetMenuParams {
+export interface GetMenuParams {
   category: string;
   query: string;
 }
