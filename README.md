@@ -163,7 +163,7 @@ Caveat: the tabs would display both custom component (icon and title) but the de
  
 
 ```tsx
-//in the (tabs) folder 
+//in the (tabs) _layout.tsx folder 
 <Tabs>
 
 </Tabs>
@@ -194,17 +194,16 @@ Caveat: the tabs would display both custom component (icon and title) but the de
     rating (float, min: 1, max: 5 , required: true), 
     calories (integer, min: 1, max: 1000, required: true),
     protein (integer, min: 1, max: 1000, required: true),
-
     - we then need to create a two way relationship between menu and categories, the relation would be many to one,ie menu can belong to one category, but a category can have many menu items
 
   - Since most food items come with optional choices like extra cheese, fries, coke etc, we need to create a new collection for customizations, fields:
-    - name (string,size:100, required: true),
+    - name (type:string,size:100, required: true),
     price (float, min: 1, max: 10000, required: true),
     type (enum, options: ['topping', 'side', 'drink', 'sauce'], required: true)
 
   - We now have to take note of the relationship between menu and customizations, the relationship would be many to many, ie a menu item can have many customizations, and a customization can belong to many menu items
     - to achieve this we would create a new collection called menu_customizations that will contain a pair of references , fields:
-      - 2 way relationship btw menu and menu_customizations (one to many, ie a menu item can have many menu_customizations, but a menu_customization belongs to one menu item)
+      - 2 way relationship btw menu and menu_customizations (many to one, ie a menu can have many menu_customizations, but a menu_customization belongs to one menu item)
       - 2 way relationship btw customizations and menu_customizations (one to many, ie a customization can have many menu_customizations, but a menu_customization belongs to one customization)
 
 

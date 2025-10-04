@@ -1,12 +1,14 @@
 import CustomButton from "@/components/shared/CustomButton";
 import CustomInput from "@/components/shared/CustomInput";
 import { appWriteServices } from "@/lib/appwrite";
+import { useAuthStore } from "@/store/auth.store";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 
 export default function Signin() {
   const [isLoading, setIsLoading] = useState(false);
+  const {setUser}= useAuthStore()
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -21,6 +23,8 @@ export default function Signin() {
     try {
       // sign in user
       const user = await appWriteServices.signInUser(form.email, form.password);
+  
+
       console.log("🚀 ~ user:", user);
       setIsLoading(false);
       Alert.alert("Success", "User signed in successfully");

@@ -1,6 +1,13 @@
 // contains all appwrite configurations
 
-import { Account, Avatars, Client, Databases, ID, Query } from "react-native-appwrite";
+import {
+  Account,
+  Avatars,
+  Client,
+  Databases,
+  ID,
+  Query,
+} from "react-native-appwrite";
 import { CreateUserParams } from "@/type";
 
 export const appwriteConfig = {
@@ -8,7 +15,19 @@ export const appwriteConfig = {
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!,
   platform: `food_delivery_app (com.titanic.food-delivery-app)`,
   databaseId: "68c497f100170337df78",
-  collectionId: "user",
+  userCollectionId: "user",
+  menuCollectionId: "menu",
+  categoriesCollectionId: "categories",
+  cartCollectionId: "cart",
+  customizationsCollectionId: "customizations",
+  menu_customizationsCollectionId: "menu_customizations",
+  // ordersCollectionId: "orders",
+  // paymentsCollectionId: "payments",
+  // reviewsCollectionId: "reviews",
+
+
+
+
 };
 
 // create appwrite client
@@ -50,7 +69,7 @@ export const appWriteServices = {
 
       return await database.createDocument(
         appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
+        appwriteConfig.userCollectionId,
         ID.unique(),
         { email, name, accountId: newAccount.$id, avatar: avatarUrl },
       );
@@ -83,7 +102,7 @@ export const appWriteServices = {
 
       const currentUser = await database.listDocuments(
         appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
+        appwriteConfig.userCollectionId,
         [Query.equal("accountId", currentAccount.$id)],
       );
       return currentUser.documents[0];

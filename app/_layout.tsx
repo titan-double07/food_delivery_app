@@ -28,7 +28,6 @@ export default function RootLayout() {
       throw fontError;
     }
     if (fontsLoaded) {
-      console.log("fonts loaded");
       SplashScreen.hideAsync(); // .hideAsync() will hide the splash screen after fonts are loaded
     }
   });
@@ -41,5 +40,9 @@ export default function RootLayout() {
     return null; // don't render UI until fonts are ready
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 }
