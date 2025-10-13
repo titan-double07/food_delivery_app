@@ -1,45 +1,30 @@
 import { images } from "@/constants";
-import { Image } from "@/utils/nativewind";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import CartButton from "../shared/CartButton";
 
 export default function Header() {
   return (
-    <View className=" w-full flex-between flex-row">
-      <View className="flex-col flex gap-1.5">
-        <Text className="small-bold text-primary">DELIVER TO</Text>
+    <View className=" flex-between w-full flex-row">
+      <View className="flex flex-col gap-1.5">
+        <Text className="small-bold text-primary">SEARCH</Text>
         {/* location dropdown */}
         <TouchableOpacity
-          className="flex-row gap-1 items-center  w-full "
+          className="w-full flex-row items-center  gap-1 "
           onPress={() => {
             console.log("location");
-          }}>
+          }}
+        >
           <Text className=" paragraph-bold">Lagos</Text>
           <Image
             source={images.arrowDown}
             resizeMode="contain"
-            className=" w-3 h-3 "
+            className=" h-3 w-3 "
           />
         </TouchableOpacity>
       </View>
       {/* cart */}
-      <Cart />
+      <CartButton />
     </View>
   );
 }
-
-const Cart = () => {
-  const numOfOrders = 2;
-  return (
-    <TouchableOpacity className="cart-btn relative ">
-      {/*  */}
-      <View className="cart-badge">
-        <Text className=" text-white text-center text-sm   ">
-          {numOfOrders}
-        </Text>
-      </View>
-      {/* cart icon */}
-      <Image source={images.bag} resizeMode="contain" className=" size-4" />
-    </TouchableOpacity>
-  );
-};

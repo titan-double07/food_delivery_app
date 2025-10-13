@@ -7,27 +7,25 @@ import {
   Databases,
   ID,
   Query,
+  Storage,
 } from "react-native-appwrite";
-import { CreateUserParams } from "@/type";
+import { CreateUserParams, GetMenuParams } from "@/type";
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!,
   platform: `food_delivery_app (com.titanic.food-delivery-app)`,
   databaseId: "68c497f100170337df78",
+  bucketId: "68e140c90011aba854b0",
   userCollectionId: "user",
   menuCollectionId: "menu",
   categoriesCollectionId: "categories",
   cartCollectionId: "cart",
-  customizationsCollectionId: "customizations",
-  menu_customizationsCollectionId: "menu_customizations",
+  customizationsCollectionId: "customization",
+  menuCustomizationsCollectionId: "menu_customizations",
   // ordersCollectionId: "orders",
   // paymentsCollectionId: "payments",
   // reviewsCollectionId: "reviews",
-
-
-
-
 };
 
 // create appwrite client
@@ -39,7 +37,8 @@ client
   .setPlatform(appwriteConfig.platform);
 
 const account = new Account(client); // used to create a new user
-const database = new Databases(client); // used to create a new database
+export const database = new Databases(client); // used to create a new database
+export const storage = new Storage(client);
 const avatars = new Avatars(client); // used to create a new avatar
 
 // define appwrite services for creating a new user
@@ -108,6 +107,41 @@ export const appWriteServices = {
       return currentUser.documents[0];
     } catch (error) {
       throw new Error(error as string);
+    }
+  },
+
+  getMenu: async ({ category, query }: GetMenuParams) => {
+    try {
+      const queries: string[] = [];
+      // if there is category add it to the query array
+      if (category) queries.push(Query.equal("categories", category));
+
+      // if there is query add it to the query array
+      if (query) queries.push(Query.search("name", query));
+
+      // get the menu from the database
+      const menus = await database.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.menuCollectionId,
+        queries,
+      );
+
+      return menus.documents;
+    } catch (e) {
+      throw new Error(e as string);
+    }
+  },
+
+  getCategories: async () => {
+    try {
+      const categories = await database.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.categoriesCollectionId,
+      );
+
+      return categories.documents;
+    } catch (e) {
+      throw new Error(e as string);
     }
   },
 };

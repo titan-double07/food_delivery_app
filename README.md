@@ -207,5 +207,96 @@ Caveat: the tabs would display both custom component (icon and title) but the de
       - 2 way relationship btw customizations and menu_customizations (one to many, ie a customization can have many menu_customizations, but a menu_customization belongs to one customization)
 
 
+## Seeding A Database
+
+ when setting up a new project, it is important to have some data in the database to test the app, this is where seeding a database comes in handy, seeding a database is the process of adding initial data to the database, this can be done manually by adding data to the database via the appwrite dashboard, or programmatically by writing a script that adds data to the database 
+
+#### From video
+- create a new file called data.ts in the lib folder, to contain the seed data (dummy data)
+- create a new file called seed.ts in the lib folder, to contain the seeding logic (check tool kit )
+  -  the seed file would be interating with the appwrite store to upload the images, so we need to add the definition for the storage in the appwrite file in lib folder (new Storage(client))
 
 
+# Search Screen
+AIM: to deevelop the search screen and display the search results
+
+First we want to write a function to get all the menu items with a search by text and filter by category.
+
+- to do that with Appwrite, we would need to specify the kind of search you want to do, Either it's a full text or its unique ie INDEXING
+
+In Appwrite dashboard => menu collection => indexes => create index
+- name it index_1 => type: full_text => field: name in asc
+
+in the appwrite file in lib folder, create a new function getMenu
+
+```tsx
+
+export const getMenu = async ({ category, query }: GetMenuParams) => {
+    try {
+        const queries: string[] = [];
+
+        if(category) queries.push(Query.equal('categories', category));
+        if(query) queries.push(Query.search('name', query));
+
+        const menus = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.menuCollectionId,
+            queries,
+        )
+
+        return menus.documents;
+    } catch (e) {
+        throw new Error(e as string);
+    }
+}
+
+
+export const getCategories = async () => {
+    try {
+        const categories = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.categoriesCollectionId,
+        )
+
+        return categories.documents;
+    } catch (e) {
+        throw new Error(e as string);
+    }
+}
+```
+
+- we can then create a reuseable function we'll use to call these functions, useAppWrite.tsx (refer to the github repo for the full code)
+```tsx
+const {data , isLoading, error, refetch} = useAppWrite(
+  {
+    fn: getMenu,
+    params: {category: "", query: "", limit:6 }
+
+  }
+)
+
+```
+
+In the search file, 
+- fetch menu and categories using the useAppWrite hook, for the categories fetch we wouldnt need any params ( it doesnt aceept any)
+ - to get the query or category we make use of useLocalSearchParams from expo-router
+ - also define a useEffect that would call the refetch function whenever the query or category changes
+
+Now the UI 
+
+- we'll make use of a flat list
+  - rendeItem to render each menu item (MenuCard component)
+  - ListHeaderComponent to render the header (search bar and categories)
+  - numColumns to  set the number of columns 
+  - columnWrapperStyle / className to style the columns
+  - contentContainerStyle / className to style the content container
+
+to get the staggered list effect, we would use the index of the item to determine the marginTop of the item
+  - if the index is even, we set the marginTop to  0, if the index is odd, we set the marginTop to 20
+
+- create a MenuCard component with the prop type MenuItem
+  - to read images from appwrite, we need the image_url and the projectId i.e 
+  ```tsx
+const imageUrl = `${menu.imageUrl}?project=${appwriteConfig.projectId}`;
+
+  ```
