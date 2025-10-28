@@ -1,12 +1,13 @@
 import Cart from "@/app/(tabs)/cart";
 import { images } from "@/constants";
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import CartButton from "../shared/CartButton";
 import SearchInput from "../shared/SearchInput";
 import Category from "../shared/CategoryButton";
 import useAppwrite from "@/lib/useAppwrite";
 import { appWriteServices } from "@/lib/appwrite";
+import { cn } from "@/lib/utils";
 type HeaderProps = {
   onCategoryChange: (category: string) => void;
   onSearch: (query: string) => void;
@@ -59,10 +60,10 @@ export default function Header({
       <SearchInput onSearch={handleSearchInputChange} />
 
       {/* categories */}
-      <ScrollView
+      {/* <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="px-5"
+        className=""
       >
         <View className=" flex-row gap-3  px-5">
           <Category
@@ -79,7 +80,43 @@ export default function Header({
             />
           ))}
         </View>
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={categoriesData}
+        keyExtractor={(item) => item.$id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerClassName="gap-x-2 pb-3"
+        renderItem={({ item }) => (
+          <View key={item.$id} className=" flex-row gap-3  px-5">
+            <Category
+              name="All"
+              isActive={selectedCategory === ""}
+              onPress={() => onCategoryChange("")}
+            />
+            {categoriesData?.map((category) => (
+              <Category
+                key={category.$id}
+                name={category.name}
+                isActive={selectedCategory === category.$id}
+                onPress={() => onCategoryChange(category.$id)}
+              />
+            ))}
+          </View>
+          // <TouchableOpacity
+          //   key={item.$id}
+          //   className={cn("filter")}
+          //   style={
+          //     Platform.OS === "android"
+          //       ? { elevation: 5, shadowColor: "#878787" }
+          //       : {}
+          //   }
+          //   // onPress={() => handlePress(item.$id)}
+          // >
+          //   <Text className={cn("body-medium")}>{item.name}</Text>
+          // </TouchableOpacity>
+        )}
+      />
     </View>
   );
 }

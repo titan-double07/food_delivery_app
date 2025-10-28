@@ -49,97 +49,7 @@ Join our community of developers creating universal apps.
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
 
-## Auth Funtionality
 
--  create a function that creates a new user account, their session and also stores them within the database as soon as they create an account. 
-
-### to do this 
-- create a new app router client and configuration
-```tsx
-// in the appwrite file in lib folder
-export const client = new Appwrite();
-client
-  .setEndpoint()
-  .setProject()
-  .setPlatform();
-
-```
-
-
-- set up different appwrite functionalities
-
-```tsx
-// in the appwrite file in lib folder
-export const account = new Account(client);
-export const database = new Databases(client);
-export const avatars= new Avatars(client);
-```
-
-- define create user function as well  as signin function
-
-```tsx
-// in the appwrite file in lib folder
-export const createUser = async ({email, password, name}:CreateUserParams) => {
-  try {
-    const newAccount = await account.create(userId:ID.unique(), email:email, password:password, name:name);
-    if(!newAccount) throw new Error("Failed to create user");
-
-    await signInUser(email, password);
-
-    const avatarUrl = await avatars.getInitialsURL(name); // used by appwrite to create an avatar for the user using their name
-
-    const newUser = await database.createDocument(
-      databaseId, // in config
-      collectionId, //inn sonfig
-      ID.unique(),
-      data:{
-        accountId: newAccount.$id, 
-        name,
-        email,
-        avatarUrl,
-      }
-    )
-    
-  }catch(error) {
-    throw new Error(error);
-  }
-
-};
-
-export const signInUser = async (email: string, password: string) => {
-  try {
-    // create a session
-    const session = await account.createEmailPasswordSession(email, password);
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-```
-
-- in the signup screen call the create user function
-  - for the function to work you might need to enable permissions in appwrite
-
-- in the login screen call the sign in function
-
-- in the appwrite file in lib folder, write a function to get the details of the logged in user
-  - save the user details in a global state
-
-### Note you need to eneble the permissions on the database in your appwrite dashboard
-
-- use a share state (Zustand store) to store the user authenticatied state
-in Auth store
-  - isAuthenticated : boolean
-  - user : User
-  - isLoading : boolean
-  - setIsAuthenticated : (isAuthenticated: boolean) => void
-  - setUser : (user: User) => void
-  - setIsLoading : (isLoading: boolean) => void
-  - fetchAuthenticatedUser: () => Promise<void>
-
-  - in the root of the app get the isLoading and fetchAuthenticatedUser from the store,
-  use a useEffect to call the function and return null if  fontsLoaded and isLoading is false
-
-  - in AuthLLayout redirect to the home page if the user is authenticated (get from store)
 
 ## Tab Navigation
 
@@ -296,7 +206,114 @@ to get the staggered list effect, we would use the index of the item to determin
 
 - create a MenuCard component with the prop type MenuItem
   - to read images from appwrite, we need the image_url and the projectId i.e 
-  ```tsx
+ ```tsx
 const imageUrl = `${menu.imageUrl}?project=${appwriteConfig.projectId}`;
 
   ```
+
+## Search and Filter Functionality
+
+### Filter functionality
+The way it works is that,
+when the user clicks on a category, its "id" is added to the url as a search param,
+which will be read by the search screen to filter the menu items by category
+
+- to get access to the search params, we would use the useLocalSearchParams hook from expo-router
+
+```tsx
+const { category: selectedCategory } = useLocalSearchParams();
+const [active, setActive] = useState<string | null>(selectedCategory ? String(selectedCategory) : "");
+
+```
+ - format your category filter implementation to use the flatlist component instead of a scrollview ( why? )
+ - create a handlePress function that would set the active category and update the url with the selected category as a search param
+```tsx
+const handlePress = (categoryId: string) => {
+    // const newCategory = active === categoryId ? "" : categoryId;
+    // setActive(newCategory);
+
+    // router.replace({
+    //     pathname: "/search",
+    //     params: { category: newCategory },
+    // });
+    setActive(categoryId);
+    if (id==="all"){
+      router.setParams({ category: undefined });
+    }else{
+      router.searchParams({ category: categoryId });
+    }
+};
+```
+
+### Search functionality
+
+- create a handleSearch function that would set the search query and update the url with the search query as a search param, making sure to debounce the function to avoid multiple calls while the user is typing ,
+  - also trim the query to remove any extra spaces
+```tsx
+const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    router.searchParams({ query });
+};
+```
+note: adding the prop returnKeytype="search" to the TextInput component would change the return key on the keyboard to a search icon
+- the `onSubmitEditing` prop would be called when the user presses the search icon on the keyboard
+
+
+## Cart Store
+
+- you'll find the cart.store.ts file in the tutorial resources,add it to the stores folder in your project.
+It contains:
+- areCustomizationEqual funtion: to compare two customizations arrays are identical by comparing their ids
+- cart store state by zustand using create()
+  - addItems
+  - removeItem
+  - clearCart
+  - increaseQty
+  - decreaseQty
+  - getTotalItems
+  - getTotalPrice
+  
+## Cart Screen
+
+ ```tsx
+  import { useCartStore } from '../../stores/cart.store';
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+
+  <SafeAreaView className="bg-white flex-1">
+   
+      <FlatList
+        data={cartItems}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <CartItemCard item={item} />}
+        ListEmptyComponent={() => (
+          <View className="flex-1 items-center justify-center mt-20">
+            <Text className="text-gray-500 text-lg">Your cart is empty</Text>
+          </View>
+        )}
+        ListHeaderComponent={() => (
+          
+        )}
+        ListFooterComponent={() => (
+          <View className="p-4">
+            <Text className="text-gray-500 text-lg">Payment summary</Text>
+            {create reusable component for summary row (label and value)}
+          </View>
+        )}
+      />
+   
+  </SafeAreaView>
+ ```
+- implement the add to cart functionality in the menu card component
+- implement the total cart items count in the tab bar icon component
+
+<!-- #TODO:
+- login sucessful drawer popup in auth screen
+- implement payment gateway (user order flow and payment with stripe)
+- menu items details screen
+- profile screen
+- implement navigation to the search page from the home screen with prefilled search/filter queries
+
+ -->
+ 

@@ -14,11 +14,11 @@
   }
 
   .flex-between {
-    @apply flex items-center justify-between;
+    @apply  items-center justify-between;
   }
 
   .flex-start {
-    @apply flex items-start justify-center;
+    @apply items-start justify-center;
   }
 
   .page-padding {

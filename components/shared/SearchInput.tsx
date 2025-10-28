@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { TextInput, View, TouchableOpacity, Image } from "react-native";
-import { images } from "@/constants"; // Assuming you have an images constant
+import { TextInput, TouchableOpacity, View } from "react-native";
 
 interface SearchInputProps {
   onSearch: (query: string) => void;
@@ -23,11 +23,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
         onSubmitEditing={handleSearch} // Trigger search on pressing Enter
       />
       <TouchableOpacity className="p-2" onPress={handleSearch}>
-        <Image
-          source={images.search} // Replace with your search icon
-          resizeMode="contain"
-          className="h-5 w-5"
-        />
+        <Ionicons name="search" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );

@@ -16,6 +16,7 @@ interface CustomButtonProps {
   leftIcon?: React.ReactNode;
   textClassName?: ClassNameValue;
   isLoading?: boolean;
+  variant?: "outline" | "filled";
 }
 
 export default function CustomButton({
@@ -24,6 +25,7 @@ export default function CustomButton({
   className,
   leftIcon,
   textClassName,
+  variant = "filled",
   isLoading = false,
 }: CustomButtonProps) {
   return (
@@ -31,7 +33,8 @@ export default function CustomButton({
       onPress={onPress}
       disabled={isLoading}
       className={cn(
-        "custom-btn flex-row items-center justify-center",
+        "custom-btn",
+        variant === "outline" && "bg-transparent border border-primary",
         className,
         isLoading && "opacity-50",
       )}
@@ -45,7 +48,9 @@ export default function CustomButton({
           <ActivityIndicator size="small" color="white" />
         ) : (
           <Text
-            className={cn("paragraph-semibold text-white-100", textClassName)}
+              className={cn("paragraph-semibold text-white-100",
+                variant === "outline" && "text-primary",
+                textClassName)}
           >
             {title}
           </Text>
