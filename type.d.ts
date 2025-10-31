@@ -39,8 +39,8 @@ export interface CartItemType {
 }
 
 export interface CartStore {
-  items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  items: CartItemType[];
+  addItem: (item: Omit<CartItemType, "quantity">) => void;
   removeItem: (id: string, customizations: CartCustomization[]) => void;
   increaseQty: (id: string, customizations: CartCustomization[]) => void;
   decreaseQty: (id: string, customizations: CartCustomization[]) => void;

@@ -27,6 +27,7 @@
 }
 
 @layer components {
+  /* CART  */
   .cart-btn {
     @apply flex items-center justify-center size-10 rounded-full bg-dark-100;
   }
@@ -36,7 +37,7 @@
   }
 
   .cart-item {
-    @apply flex flex-row items-end justify-between mb-4 bg-white rounded-xl p-3 shadow-md shadow-dark-100/10;
+    @apply flex flex-row items-center gap-5 mb-4 bg-white rounded-xl p-3 shadow-md shadow-dark-100/10;
   }
 
   .cart-item__image {
@@ -44,7 +45,7 @@
   }
 
   .cart-item__actions {
-    @apply flex flex-row items-center justify-center size-5 bg-primary/10 rounded-md;
+    @apply flex flex-row items-center justify-center  bg-primary/10 rounded-md;
   }
 
   .custom-btn {
@@ -54,6 +55,8 @@
   .custom-header {
     @apply w-full flex flex-row items-center justify-between mb-10;
   }
+
+  /* FORM */
 
   .label {
     @apply text-base text-start w-full font-quicksand-medium text-gray-500 pl-2;
@@ -69,14 +72,6 @@
 
   .menu-card {
     @apply relative py-9 px-3.5 pt-24 flex items-center justify-end  bg-white shadow-md shadow-black/10 rounded-3xl;
-  }
-
-  .profile-field {
-    @apply flex flex-row items-center justify-start mb-4;
-  }
-
-  .profile-field__icon {
-    @apply size-12 rounded-full bg-primary/10 flex items-center justify-center mr-3;
   }
 
   .searchbar {
@@ -95,6 +90,8 @@
     @apply flex-1 h-full flex flex-col justify-center items-start gap-4;
   }
 
+  /* PROFILE */
+
   .profile-avatar {
     @apply relative size-28 border-white border-2 rounded-full;
   }
@@ -102,6 +99,16 @@
   .profile-edit {
     @apply flex items-center justify-center absolute bottom-2 right-0 bg-primary border-2 border-white size-7 p-2 rounded-full;
   }
+  
+  .profile-field {
+    @apply flex flex-row items-center justify-start mb-4;
+  }
+
+  .profile-field__icon {
+    @apply size-12 rounded-full bg-primary/10 flex items-center justify-center mr-3;
+  }
+
+  /* TYPOGRAPHY */
 
   .h1-bold {
     @apply text-3xl font-quicksand-bold;
