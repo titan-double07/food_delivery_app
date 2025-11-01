@@ -4,13 +4,17 @@ import { appWriteServices } from "@/lib/appwrite";
 import useAppwrite from "@/lib/useAppwrite";
 import { cn } from "@/lib/utils";
 import { MenuItem } from "@/type";
-import React, { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Search() {
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  // get category and search query from params
+  const { category, query } = useLocalSearchParams<{
+    query: string;
+    category: string;
+  }>();
 
   // get menu
   const {
@@ -21,42 +25,34 @@ export default function Search() {
   } = useAppwrite({
     fn: appWriteServices.getMenu,
     params: {
-      category: selectedCategory,
-      query: searchQuery,
+      category,
+      query,
       limit: 10,
     },
   });
-  // console.log("Search ~ menuData:", JSON.stringify(menuData, null, 2));
+  // get categories
+  // const { data: categories } = useAppwrite({ fn: getCategories });
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
+  useEffect(() => {
+    refetch({ category, query, limit: 6 });
+  }, [category, query]);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  //TODO: Fix issue  where clearing th search query does not clear the menu and using the filter (All) does not reset the menu either
 
   return (
-    <SafeAreaView className="bg-white flex-1">
+    <SafeAreaView className="flex-1 bg-white">
       <FlatList
-        ListHeaderComponent={
-          <Header
-            onCategoryChange={handleCategoryChange}
-            onSearch={handleSearch}
-            selectedCategory={selectedCategory}
-          />
-          
-        }
+        ListHeaderComponent={<Header />}
         data={menuData}
         keyExtractor={(item) => item.$id}
         numColumns={2}
         columnWrapperClassName="gap-[30px]"
         ListHeaderComponentClassName="my-[27px]"
-        contentContainerClassName="gap-5 px-5 "
+        contentContainerClassName="gap-5 page-padding "
         renderItem={({ item, index }) => {
           const isEven = index % 2 === 0;
           return (
-            <View className={cn("w-full flex-1", !isEven && "mt-16")}>
+            <View className={cn("max-w-[50%] flex-1", !isEven && "mt-16")}>
               <MenuCard item={item as unknown as MenuItem} />
             </View>
           );

@@ -10,7 +10,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
   const [searchText, setSearchText] = React.useState("");
 
   const handleSearch = () => {
-    onSearch(searchText);
+    onSearch(searchText.trim());
   };
 
   return (
@@ -21,6 +21,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
         value={searchText}
         onChangeText={setSearchText}
         onSubmitEditing={handleSearch} // Trigger search on pressing Enter
+        returnKeyType="search"
       />
       <TouchableOpacity className="p-2" onPress={handleSearch}>
         <Ionicons name="search" size={24} color="black" />

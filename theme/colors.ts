@@ -4,11 +4,11 @@ export const colors = {
     white: {
       DEFAULT: "#ffffff",
       100: "#fafafa",
-      200: "#FE8C00",
+      200: "#f5f5f5",
     },
     gray: {
       100: "#878787",
-      200: "#878787",
+      200: "#b0b0b0",
     },
     dark: {
       100: "#181C2E",

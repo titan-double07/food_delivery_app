@@ -1,37 +1,47 @@
-import Cart from "@/app/(tabs)/cart";
 import { images } from "@/constants";
-import React, { useEffect, useState } from "react";
-import { FlatList, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import CartButton from "../shared/CartButton";
-import SearchInput from "../shared/SearchInput";
-import Category from "../shared/CategoryButton";
-import useAppwrite from "@/lib/useAppwrite";
 import { appWriteServices } from "@/lib/appwrite";
-import { cn } from "@/lib/utils";
-type HeaderProps = {
-  onCategoryChange: (category: string) => void;
-  onSearch: (query: string) => void;
-  selectedCategory: string;
-};
-export default function Header({
-  onCategoryChange,
-  onSearch,
-  selectedCategory,
-}: HeaderProps) {
+import useAppwrite from "@/lib/useAppwrite";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import CartButton from "../shared/CartButton";
+import Category from "../shared/CategoryButton";
+import SearchInput from "../shared/SearchInput";
+
+
+export default function Header() {
+  const router = useRouter();
+  const searchParams = useLocalSearchParams<{ category?: string }>();
+
   // get categories
   const { data: categoriesData } = useAppwrite({
     fn: appWriteServices.getCategories,
   });
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [active, setActive] = useState<string | null>(
+    searchParams.category || "",
+  );
 
-  const handleSearchInputChange = (text: string) => {
-    setSearchQuery(text);
+  // on category press
+  const onCategoryChange = (categoryId: string) => {
+    setActive(categoryId);
+    router.setParams({
+      category: categoryId,
+    });
   };
 
-  useEffect(() => {
-    onSearch(searchQuery);
-  }, [searchQuery]);
+  // on search
+  const onSearch = (query: string) => {
+    router.setParams({
+      query: query,
+    });
+  };
+
+  // Create a combined list with "All" at the beginning
+  const categoriesWithAll = [
+    { $id: "all", name: "All" },
+    ...(categoriesData || []),
+  ];
 
   return (
     <View className="gap-7">
@@ -57,64 +67,24 @@ export default function Header({
         <CartButton />
       </View>
       {/* search input */}
-      <SearchInput onSearch={handleSearchInputChange} />
+      <SearchInput onSearch={onSearch} />
 
       {/* categories */}
-      {/* <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className=""
-      >
-        <View className=" flex-row gap-3  px-5">
-          <Category
-            name="All"
-            isActive={selectedCategory === ""}
-            onPress={() => onCategoryChange("")}
-          />
-          {categoriesData?.map((category) => (
-            <Category
-              key={category.$id}
-              name={category.name}
-              isActive={selectedCategory === category.$id}
-              onPress={() => onCategoryChange(category.$id)}
-            />
-          ))}
-        </View>
-      </ScrollView> */}
       <FlatList
-        data={categoriesData}
+        data={categoriesWithAll}
         keyExtractor={(item) => item.$id}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerClassName="gap-x-2 pb-3"
         renderItem={({ item }) => (
-          <View key={item.$id} className=" flex-row gap-3  px-5">
-            <Category
-              name="All"
-              isActive={selectedCategory === ""}
-              onPress={() => onCategoryChange("")}
-            />
-            {categoriesData?.map((category) => (
-              <Category
-                key={category.$id}
-                name={category.name}
-                isActive={selectedCategory === category.$id}
-                onPress={() => onCategoryChange(category.$id)}
-              />
-            ))}
-          </View>
-          // <TouchableOpacity
-          //   key={item.$id}
-          //   className={cn("filter")}
-          //   style={
-          //     Platform.OS === "android"
-          //       ? { elevation: 5, shadowColor: "#878787" }
-          //       : {}
-          //   }
-          //   // onPress={() => handlePress(item.$id)}
-          // >
-          //   <Text className={cn("body-medium")}>{item.name}</Text>
-          // </TouchableOpacity>
+          <Category
+            key={item.$id}
+            name={item.name}
+            isActive={
+              active === item.$id || (active === "" && item.$id === "all")
+            }
+            onPress={() => onCategoryChange(item.$id === "all" ? "" : item.$id)}
+          />
         )}
       />
     </View>

@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <SafeAreaView className="bg-whiteflex-1">
+    <SafeAreaView className="flex-1 bg-white">
       <FlatList
         ListHeaderComponent={<Header />}
         ListHeaderComponentClassName="my-[27px]"
@@ -20,23 +20,24 @@ export default function Index() {
               <Pressable
                 className={cn(
                   "offer-card",
-                  isEven ? "flex-row-reverse" : "flex-row"
+                  isEven ? "flex-row-reverse" : "flex-row",
                 )}
                 style={{
                   backgroundColor: item.color,
-                  
-                 }}
-                android_ripple={{ color: "#fffff22" }}>
+                }}
+                android_ripple={{ color: "#fffff22" }}
+              >
                 {({ pressed }) => (
                   <Fragment>
                     <View
                       className={cn(
                         "offer-card__info",
-                        isEven ? "pr-10" : "pl-10"
-                      )}>
+                        isEven ? "pr-10" : "pl-10",
+                      )}
+                    >
                       {/* title */}
                       <View className="  offer-card__info  ">
-                        <Text className="text-white leading-tight h1-bold ">
+                        <Text className="h1-bold leading-tight text-white ">
                           {item.title}
                         </Text>
                       </View>
@@ -64,7 +65,7 @@ export default function Index() {
             </View>
           );
         }}
-        contentContainerClassName="px-5 pb-28"
+        contentContainerClassName="page-padding"
       />
     </SafeAreaView>
   );

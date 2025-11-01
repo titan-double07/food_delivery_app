@@ -86,14 +86,18 @@ export const useCartStore = create<CartStore>((set, get) => ({
      * @param customizations {CartCustomization[]} - customizations of the item to increase
      */
     increaseQty: (id, customizations = []) => {
-        set({
-            items: get().items.map((i) =>
-                i.id === id &&
-                areCustomizationsEqual(i.customizations ?? [], customizations)
-                    ? { ...i, quantity: i.quantity + 1 }
-                    : i
-            ),
-        });
+        const items = get().items.map((i) =>
+            i.id === id &&
+            areCustomizationsEqual(i.customizations ?? [], customizations)
+                ? { ...i, quantity: i.quantity + 1 }
+                : i
+        );
+        const item = items.find((i) => i.id === id && areCustomizationsEqual(i.customizations ?? [], customizations));
+        if (item) {
+            console.log(`Increased quantity of ${item.name} to ${item.quantity}`);
+        }
+        set({ items });
+
     },
 
     /**

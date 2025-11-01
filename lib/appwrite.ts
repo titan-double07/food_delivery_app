@@ -144,6 +144,13 @@ export const appWriteServices = {
       throw new Error(e as string);
     }
   },
+  signOutUser: async () => {
+    try {
+      await account.deleteSession({ sessionId: "current" });
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  },
 };
 
 // Note you need to eneble the appwrite services in your appwrite dashboard

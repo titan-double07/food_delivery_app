@@ -1,39 +1,70 @@
 import { useAuthStore } from "@/store/auth.store";
-import { FontAwesome } from "@expo/vector-icons";
+import { useCartStore } from "@/store/cart.store";
+import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import React from "react";
-import { StatusBar, Text, TouchableOpacity, View } from "react-native";
-import { BlurView } from "expo-blur";
+import { StatusBar, Text, View } from "react-native";
+import { colors } from "@/theme/colors";
+
+
 export const navItems = [
   {
     name: "index",
     title: "Home",
     icon: ({ color, size }: { color: string; size: number }) => (
-      <FontAwesome name="home" size={size} color={color} />
+      <Ionicons name="home-outline" size={size} color={color} />
     ),
   },
   {
     name: "search",
     title: "Search",
     icon: ({ color, size }: { color: string; size: number }) => (
-      <FontAwesome name="search" size={size} color={color} />
+      <Ionicons name="search-outline" size={size} color={color} />
     ),
   },
   {
     name: "cart",
     title: "Cart",
     icon: ({ color, size }: { color: string; size: number }) => (
-      <FontAwesome name="shopping-cart" size={size} color={color} />
+      <CartTabIcon color={color} size={size} />
     ),
   },
   {
     name: "profile",
     title: "Profile",
     icon: ({ color, size }: { color: string; size: number }) => (
-      <FontAwesome name="user" size={size} color={color} />
+      <Ionicons name="person-circle-outline" size={size} color={color} />
     ),
   },
 ];
+
+const CartTabIcon = ({ color, size }: { color: string; size: number }) => {
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
+  return (
+    <View className="relative w-fit">
+      <Ionicons name="bag-handle-outline" size={size} color={color} />
+      {totalItems > 0 && (
+        <View
+          style={
+            {
+              position: "absolute",
+              top: -5,
+              right: -5,
+              backgroundColor: colors.light.primary,
+              borderRadius: 10,
+              paddingHorizontal: 5,
+              paddingVertical: 1,
+            }
+          }
+        >
+          <Text className="body-medium text-white ">{totalItems}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 
 export default function TabsLayout() {
   const { isAuthenticated } = useAuthStore();
@@ -68,8 +99,6 @@ export default function TabsLayout() {
           },
           tabBarLabelStyle: { fontSize: 14 },
           tabBarItemStyle: { paddingVertical: 0 },
-         
-          
         }}
       >
         {navItems.map((item) => (
@@ -86,3 +115,4 @@ export default function TabsLayout() {
     </>
   );
 }
+

@@ -1,32 +1,46 @@
 import CartItem from '@/components/cart-screen/CartItem';
 import Header from '@/components/cart-screen/Header';
+import PaymentSummary from '@/components/cart-screen/PaymentSummary';
 import { useCartStore } from '@/store/cart.store';
 import React from 'react'
-import { FlatList, Image, Text, View } from 'react-native'
+import { FlatList, Image, Platform, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function Cart() {
   const cartItems = useCartStore((state) => state.items);
-  console.log("🚀 ~ Cart ~ cartItems:", cartItems)
   return (
-    <SafeAreaView className="page-padding flex-1 bg-white">
+    <SafeAreaView className=" flex-1 ">
       <FlatList
-        ListHeaderComponent={<Header />}
         ListHeaderComponentClassName="my-[27px]"
+        ListHeaderComponent={<Header />}
         data={cartItems}
         renderItem={({ item }) => {
-          return (
-           <CartItem item={item}/>
-          );
-        }
-        }
-        ListEmptyComponent={() => (     
-          <View className="flex-1 items-center justify-center mt-20">
-            <Text className="text-gray-500 text-lg">Your cart is empty</Text>
+          return <CartItem item={item} />;
+        }}
+        contentContainerClassName="page-padding"
+        ListEmptyComponent={() => (
+          <View className="mt-20 flex-1 items-center justify-center">
+            <Text className="text-lg text-gray-500">Your cart is empty</Text>
           </View>
         )}
-
+        ListFooterComponentClassName="mt-[27px]"
+        ListFooterComponent={() => {
+          return <PaymentSummary />;
+        }}
       />
     </SafeAreaView>
   );
+
 }
+
+export const styles = StyleSheet.create({
+  shadow:
+    Platform.OS === "android"
+      ? { elevation: 5, shadowColor: "#878787" }
+      : {
+          shadowColor: "#878787",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+        },
+});

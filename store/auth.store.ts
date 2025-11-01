@@ -7,9 +7,10 @@ type AuthState = {
   user: User | null;
   isLoading: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUser: (user: Partial<User>) => void;
+  setUser: (user: Partial<User|null>) => void;
   setIsLoading: (isLoading: boolean) => void;
   fetchAuthenticatedUser: () => Promise<void>;
+  logout: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -40,4 +41,5 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },
+  logout: () => set({ user: null, isAuthenticated: false }),
 }));

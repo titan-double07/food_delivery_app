@@ -1,18 +1,25 @@
+import { styles } from "@/app/(tabs)/cart";
+import { useCartStore } from "@/store/cart.store";
 import { colors } from "@/theme/colors";
 import { CartItemType } from "@/type";
 import { Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "expo-checkbox";
 import React, { useState } from "react";
-import { Platform } from "react-native";
-import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  View
+} from "react-native";
 
 export default function CartItem({ item }: { item: CartItemType }) {
   console.log("🚀 ~ CartItem ~ item:", item);
   const [isChecked, setChecked] = useState(false);
+
+  const { removeItem,increaseQty, decreaseQty } = useCartStore((s) => s);
   return (
     <View className="cart-item" style={[styles.shadow]}>
       {/* checkbox */}
-      {/* <View className="flex-row items-center gap-4"> */}
       <Checkbox
         className="m-2 "
         value={isChecked}
@@ -29,16 +36,16 @@ export default function CartItem({ item }: { item: CartItemType }) {
         {/* ations */}
         <View className="flex-row items-center justify-between">
           <View className="paragraph-bold flex-row items-center gap-5">
-            <Pressable className="cart-item__actions">
+            <Pressable className="cart-item__actions" onPress={()=>decreaseQty(item.id, item.customizations!)}>
               <Ionicons
                 name="remove-outline"
                 size={20}
                 color={colors.light.primary}
-                className="cart-item__actions"
+                className=""
               />
             </Pressable>
             <Text className="base-bold text-dark-100">{item.quantity}</Text>
-            <Pressable className="cart-item__actions">
+            <Pressable className="cart-item__actions" onPress={()=>increaseQty(item.id, item.customizations!) } >
               <Ionicons
                 name="add-outline"
                 size={20}
@@ -47,7 +54,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
             </Pressable>
           </View>
           {/* delete */}
-          <Pressable>
+          <Pressable onPress={() => removeItem(item.id, item.customizations!)}>
             <Ionicons
               name="trash-outline"
               size={20}
@@ -56,19 +63,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
           </Pressable>
         </View>
       </View>
-      {/* </View> */}
+      
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  shadow:
-    Platform.OS === "android"
-      ? { elevation: 5 }
-      : {
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-});
