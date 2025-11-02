@@ -101,7 +101,7 @@
   }
   
   .profile-field {
-    @apply flex flex-row items-center justify-start mb-4;
+    @apply flex-row items-center justify-start gap-2 mb-4;
   }
 
   .profile-field__icon {

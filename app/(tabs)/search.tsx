@@ -5,8 +5,8 @@ import useAppwrite from "@/lib/useAppwrite";
 import { cn } from "@/lib/utils";
 import { MenuItem } from "@/type";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Search() {

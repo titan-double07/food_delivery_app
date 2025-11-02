@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils"; // assuming you're using a cn helper
 import React from "react";
 import {
     ActivityIndicator,
+    Pressable,
     Text,
     TouchableOpacity,
     View
@@ -29,21 +30,22 @@ export default function CustomButton({
   isLoading = false,
 }: CustomButtonProps) {
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       disabled={isLoading}
       className={cn(
         "custom-btn",
-        variant === "outline" && "bg-transparent border border-primary",
-        className,
+        variant === "outline" && "bg-transparent border border-primary gap-2",
         isLoading && "opacity-50",
+        className,
       )}
+      
     >
       {/* Left Icon */}
-      {leftIcon && <View className="mr-2">{leftIcon}</View>}
+      {leftIcon && <View className="">{leftIcon}</View>}
 
       {/* Button Content */}
-      <View className="flex-1 items-center justify-center">
+      <View className="items-center justify-center">
         {isLoading ? (
           <ActivityIndicator size="small" color="white" />
         ) : (
@@ -56,6 +58,6 @@ export default function CustomButton({
           </Text>
         )}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 }

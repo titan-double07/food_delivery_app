@@ -1,19 +1,34 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { Touchable, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-export default function BackandSearchBtnHeader() {
+type BackandSearchBtnHeaderProps = {
+  title?: string;
+};
+export default function BackandSearchBtnHeader({
+  title,
+}: BackandSearchBtnHeaderProps) {
+
+  const router = useRouter()
   return (
     <View className="flex-row justify-between">
       {/* arrow back */}
-      <TouchableOpacity>
+      <Pressable onPress={() => router.back()}>
         <Ionicons name="arrow-back-outline" size={24} color="black" />
-          </TouchableOpacity>
-          
+      </Pressable>
+
+      {/* title */}
+      <View>
+        <Text className="base-semibold">{title}</Text>
+      </View>
+
       {/* search btn */}
-      <TouchableOpacity>
+      <Pressable onPress={()=>{
+        router.push("/(tabs)/search")
+      }}>
         <Ionicons name="search" size={24} color="black" />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
