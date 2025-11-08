@@ -7,7 +7,7 @@ import { Pressable, Text, View } from "react-native";
 
 export default function CartButton() {
     const totalItems = useCartStore((state) => state.getTotalItems());
-  const router = useRouter()
+    const router = useRouter()
 
   return (
    

@@ -309,11 +309,26 @@ It contains:
 - implement the total cart items count in the tab bar icon component
 
 <!-- #TODO:
-- login sucessful drawer popup in auth screen
-- implement payment gateway (user order flow and payment with stripe)
-- menu items details screen
-- profile screen
-- implement navigation to the search page from the home screen with prefilled search/filter queries
+Left over UI from figma design
+- Login Successfull drawer
+- Empty State for Search Screen
+- Menu Item Details Screen
+
+Functionality and UX 
+- loading states
+- error handling and displaying error messages in Auth screens, orders, edit profile ( any screen that makes api calls )
+- light and dark mode support
+
+- Cart Screen:
+  - Account for delivery fees and discount in the payment summary, likely in the database architecture
+  - Add a "Clear Cart" button to the cart screen
+  - Payment Integration (Stripe, PayPal, etc)
+
+- Profile Screen:
+  - Edit Profile functionality
+  - Order History Screen
+  - Wishlist/Favorites functionality
+
 
  -->
  

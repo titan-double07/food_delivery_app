@@ -1,5 +1,6 @@
-import { styles } from "@/app/(tabs)/cart";
+
 import { useCartStore } from "@/store/cart.store";
+import { styles } from "@/styles/cart-style";
 import { colors } from "@/theme/colors";
 import { CartItemType } from "@/type";
 import { Ionicons } from "@expo/vector-icons";

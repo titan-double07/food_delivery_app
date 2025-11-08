@@ -1,9 +1,9 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { CartItemType } from "@/type";
-import { useCartStore } from "@/store/cart.store";
+
+import { styles } from "@/styles/cart-style";
 import { cn } from "@/lib/utils";
-import { styles } from "@/app/(tabs)/cart";
+import { useCartStore } from "@/store/cart.store";
+import React from "react";
+import { Text, View } from "react-native";
 
 export default function PaymentSummary() {
     
