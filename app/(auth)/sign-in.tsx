@@ -1,80 +1,103 @@
 import CustomButton from "@/components/shared/CustomButton";
 import CustomInput from "@/components/shared/CustomInput";
+import CustomPasswordInput from "@/components/shared/CustomPasswordInput";
 import { appWriteServices } from "@/lib/appwrite";
 import { useAuthStore } from "@/store/auth.store";
+import { showAlert } from "@/utils/alert";
+import { showToast } from "@/utils/toast";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Signin() {
   const [isLoading, setIsLoading] = useState(false);
-  const {setUser}= useAuthStore()
+  const { setUser } = useAuthStore();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
   const handleSubmit = async () => {
-    console.log("🚀 ~ form:", form);
-    if (!form.email || !form.password)
-      return Alert.alert("Error", "Please fill all the fields");
+    // Use Toast for quick validation feedback
+    if (!form.email || !form.password) {
+      showToast("error", "Missing Fields", "Please fill in all the fields.");
+      return;
+    }
 
     setIsLoading(true);
     try {
-      // sign in user
       const user = await appWriteServices.signInUser(form.email, form.password);
-  
 
-      console.log("🚀 ~ user:", user);
-      setIsLoading(false);
-      Alert.alert("Success", "User signed in successfully");
-      // navigate to home page
-      router.replace("/");
+      if (user) {
+        const currentUser = await appWriteServices.getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+        }
+
+        // Use Toast for success - quick, non-blocking
+        showToast("success", "Success", "Signed in successfully! 🎉");
+
+        setTimeout(() => router.replace("/(tabs)"), 1000);
+      } else {
+        // Use Alert for critical errors - requires acknowledgment
+        showAlert(
+          "error",
+          "Sign In Failed",
+          "Failed to sign in. Please try again.",
+        );
+      }
     } catch (error: any) {
+      // Use Alert for detailed error messages - user needs to read full message
+      showAlert(
+        "error",
+        "Sign In Failed",
+        error.message || "Failed to sign in. Please try again.",
+      );
+    } finally {
       setIsLoading(false);
-      Alert.alert("Error", error.message);
     }
   };
-
   return (
-    <ScrollView>
-      <View className="flex flex-col gap-10">
-        {/* email */}
-        <CustomInput
-          label="Email"
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          value={form.email}
-          onChangeText={(text) => setForm(prev=> ({...prev, email:text}))}
-        />
-        {/* password */}
-        <CustomInput
-          label="Password"
-          placeholder="Enter your password"
-          secureTextEntry
-          value={form.password}
-          onChangeText={(text) => setForm(prev=> ({...prev, password:text}))}
-        />
+    <>
+      <View>
+        <View className="gap-8">
+          <CustomInput
+            label="Email"
+            placeholder="Enter your email"
+            keyboardType="email-address"
+            value={form.email}
+            onChangeText={(text) =>
+              setForm((prev) => ({ ...prev, email: text }))
+            }
+          />
+          <CustomPasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            value={form.password}
+            onChangeText={(text) =>
+              setForm((prev) => ({ ...prev, password: text }))
+            }
+          />
 
-        <CustomButton
-          title="Sign In"
-          onPress={handleSubmit}
-          isLoading={isLoading}
-          
-        />
-      </View>
+          <CustomButton
+            title="Sign In"
+            onPress={handleSubmit}
+            isLoading={isLoading}
+          />
+        </View>
 
-      <Text className="pt-8 text-center text-gray-400">
-        Don&apos;t have an account?{" "}
-        <Text
-          onPress={() => {
-            router.push("/sign-up");
-          }}
-          className="text-primary"
-        >
-          Sign Up
+        <Text className="pt-8 text-center text-gray-400">
+          Don&apos;t have an account?{" "}
+          <Text
+            onPress={() => {
+              router.push("/sign-up");
+            }}
+            className="text-primary"
+          >
+            Sign Up
+          </Text>
         </Text>
-      </Text>
-    </ScrollView>
+      </View>
+    </>
   );
 }

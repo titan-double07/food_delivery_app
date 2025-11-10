@@ -1,10 +1,11 @@
 import { useFonts } from "expo-font";
 import "react-native-reanimated";
 import "./global.css";
-
-import { Redirect, SplashScreen, Stack, useRouter, useSegments } from "expo-router";
-import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect } from "react";
+import Toast from "react-native-toast-message";
+import CustomAlert from "@/components/shared/CustomAlert";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent auto-hiding the splash until fonts are ready
@@ -69,8 +70,12 @@ export default function RootLayout() {
 
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-    </Stack>
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+      <Toast />
+      <CustomAlert />
+    </>
   );
 }

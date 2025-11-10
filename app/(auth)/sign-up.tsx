@@ -16,14 +16,19 @@ export default function SignUp() {
 
   const handleSubmit = async () => {
     //  if no data throw error
-    if (!form.fullname || !form.email || !form.password || !form.confirmPassword) {
+    if (
+      !form.fullname ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
       return Alert.alert("Error", "Please fill all the fields");
     }
     setIsLoading(true);
     // if passwords dont match throw error
     if (form.password !== form.confirmPassword) {
       setIsLoading(false);
-      return Alert.alert( "Error", "Passwords do not match");
+      return Alert.alert("Error", "Passwords do not match");
     }
 
     console.log("🚀 ~ form:", form);
@@ -46,12 +51,16 @@ export default function SignUp() {
   };
 
   return (
-    <ScrollView>
-      <View className="flex flex-col gap-10">
+    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <View className=" gap-8">
         {/* fullname */}
-        <CustomInput label="Fullname" placeholder="Enter your fullname"
+        <CustomInput
+          label="Fullname"
+          placeholder="Enter your fullname"
           value={form.fullname}
-          onChangeText={(text) => setForm((prev) => ({ ...prev, fullname: text }))}
+          onChangeText={(text) =>
+            setForm((prev) => ({ ...prev, fullname: text }))
+          }
         />
         {/* email */}
         <CustomInput

@@ -1,6 +1,5 @@
 import { images } from "@/constants";
 import { useAuthStore } from "@/store/auth.store";
-import { useRoute } from "@react-navigation/native";
 import { Redirect, Slot, usePathname } from "expo-router";
 import React from "react";
 import {
@@ -22,18 +21,20 @@ export default function AuthLayout() {
   }
 
   return (
+    // <View className=" bg-white ">
     <KeyboardAvoidingView
-      className=" flex-1"
       behavior={Platform.OS === "ios" ? "padding" : "height"} // this was added due to a different behaviour in android vs ios , where we have to add a padding on ios devices to push the conent up, while we need to add height on android
       keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <ScrollView
-        className="h-full bg-white"
+        className=" relative h-full bg-white"
+        showsVerticalScrollIndicator={false}
+        // style={{ height: Dimensions.get("screen").height }}
         keyboardShouldPersistTaps="handled"
       >
         <View
           style={{ height: Dimensions.get("screen").height }}
-          className={`relative w-full   `}
+          className={`relative`}
         >
           <ImageBackground
             source={
@@ -43,18 +44,26 @@ export default function AuthLayout() {
             }
             resizeMode="cover"
             // style={styles.image}
-            className="h-[430px]  w-full"
+            className="h-[400px]  w-full"
           ></ImageBackground>
           <Image
             source={images.logo}
             resizeMode="contain"
             className="absolute left-1/2 top-[270px] z-10 size-[150px] -translate-x-1/2"
           />
-          <View className="absolute bottom-0 h-[59%] w-full rounded-t-[30px]  bg-white p-[30px] pt-[84px] shadow-lg shadow-black">
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              // zIndex: 10,
+            }}
+            className=" h-[58%] w-full  rounded-t-[30px] bg-white p-[30px] pt-[82px] shadow-lg shadow-black"
+          >
             <Slot />
           </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    // {/* </View> */}
   );
 }

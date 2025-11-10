@@ -78,6 +78,7 @@ export default function Profile() {
             textClassName=" text-primary paragraph-semibold"
           />
           <CustomButton
+            onPress={handleLogout}
             variant="outline"
             title="Log out"
             leftIcon={
@@ -87,7 +88,6 @@ export default function Profile() {
                 color={colors.light.error}
               />
             }
-            onPress={() => {}}
             className=" border-error bg-error/10"
             textClassName=" text-error paragraph-semibold"
           />
