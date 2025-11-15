@@ -1,4 +1,5 @@
 import { images } from "@/constants";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import { Redirect, Slot, usePathname } from "expo-router";
 import React from "react";
@@ -15,6 +16,7 @@ import {
 export default function AuthLayout() {
   const pathname = usePathname();
   const { isAuthenticated } = useAuthStore();
+  console.log("🚀 ~ AuthLayout ~ isAuthenticated:", isAuthenticated);
 
   if (isAuthenticated) {
     return <Redirect href="/" />;
@@ -30,7 +32,7 @@ export default function AuthLayout() {
         className=" relative h-full bg-white"
         showsVerticalScrollIndicator={false}
         // style={{ height: Dimensions.get("screen").height }}
-        keyboardShouldPersistTaps="handled"
+        // keyboardShouldPersistTaps="handled"
       >
         <View
           style={{ height: Dimensions.get("screen").height }}
@@ -49,18 +51,13 @@ export default function AuthLayout() {
           <Image
             source={images.logo}
             resizeMode="contain"
-            className="absolute left-1/2 top-[270px] z-10 size-[150px] -translate-x-1/2"
+            className={cn(
+              "absolute left-1/2 top-[290px] z-10 size-[150px] -translate-x-1/2",
+              pathname === "/sign-up" && "top-[210px]",
+            )}
           />
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              // zIndex: 10,
-            }}
-            className=" h-[58%] w-full  rounded-t-[30px] bg-white p-[30px] pt-[82px] shadow-lg shadow-black"
-          >
-            <Slot />
-          </View>
+
+          <Slot />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

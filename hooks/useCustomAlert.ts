@@ -7,7 +7,7 @@ interface AlertState {
   message: string;
 }
 
-export const useCustomAlert = () => {
+export default function useCustomAlert() {
   const [alert, setAlert] = useState<AlertState>({
     visible: false,
     type: "info",
@@ -28,4 +28,4 @@ export const useCustomAlert = () => {
   };
 
   return { alert, showAlert, hideAlert };
-};
+}

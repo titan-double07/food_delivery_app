@@ -1,3 +1,4 @@
+import { showAlert } from "@/utils/alert";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 
@@ -53,7 +54,7 @@ const useAppwrite = <T, P extends Record<string, string | number>>({
         const errorMessage =
           err instanceof Error ? err.message : "An unknown error occurred";
         setError(errorMessage);
-        Alert.alert("Error", errorMessage);
+        showAlert("error", "Error", errorMessage);
       } finally {
         setLoading(false);
       }

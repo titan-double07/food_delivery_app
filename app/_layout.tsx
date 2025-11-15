@@ -63,11 +63,10 @@ export default function RootLayout() {
   //   })();
   // }, []);
 
-    // 👇 Decide where to start
+  // 👇 Decide where to start
   // if (isAuthenticated) {
   //   return <Redirect href="/(tabs)/search" />;
   // }
-
 
   return (
     <>

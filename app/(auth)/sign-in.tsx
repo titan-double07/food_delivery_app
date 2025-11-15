@@ -5,41 +5,51 @@ import { appWriteServices } from "@/lib/appwrite";
 import { useAuthStore } from "@/store/auth.store";
 import { showAlert } from "@/utils/alert";
 import { showToast } from "@/utils/toast";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import { z } from "zod";
+
+const signInSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function Signin() {
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useAuthStore();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
+  const { setUser, setIsAuthenticated } = useAuthStore();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const handleSubmit = async () => {
-    // Use Toast for quick validation feedback
-    if (!form.email || !form.password) {
-      showToast("error", "Missing Fields", "Please fill in all the fields.");
-      return;
-    }
-
+  const onSubmit = async (data: SignInFormData) => {
     setIsLoading(true);
     try {
-      const user = await appWriteServices.signInUser(form.email, form.password);
+      const user = await appWriteServices.signInUser(data.email, data.password);
 
       if (user) {
         const currentUser = await appWriteServices.getCurrentUser();
         if (currentUser) {
           setUser(currentUser);
+          setIsAuthenticated(true);
         }
 
-        // Use Toast for success - quick, non-blocking
         showToast("success", "Success", "Signed in successfully! 🎉");
 
         setTimeout(() => router.replace("/(tabs)"), 1000);
       } else {
-        // Use Alert for critical errors - requires acknowledgment
         showAlert(
           "error",
           "Sign In Failed",
@@ -47,7 +57,6 @@ export default function Signin() {
         );
       }
     } catch (error: any) {
-      // Use Alert for detailed error messages - user needs to read full message
       showAlert(
         "error",
         "Sign In Failed",
@@ -57,31 +66,52 @@ export default function Signin() {
       setIsLoading(false);
     }
   };
+
   return (
-    <>
+    <View
+      style={{
+        position: "absolute",
+        bottom: 0,
+        // zIndex: 10,
+      }}
+      className=" h-[58%] w-full flex-1  rounded-t-[30px] bg-white p-[30px] pt-[82px] shadow-lg shadow-black"
+    >
       <View>
         <View className="gap-8">
-          <CustomInput
-            label="Email"
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            value={form.email}
-            onChangeText={(text) =>
-              setForm((prev) => ({ ...prev, email: text }))
-            }
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Email"
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.email?.message}
+              />
+            )}
           />
-          <CustomPasswordInput
-            label="Password"
-            placeholder="Enter your password"
-            value={form.password}
-            onChangeText={(text) =>
-              setForm((prev) => ({ ...prev, password: text }))
-            }
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomPasswordInput
+                label="Password"
+                placeholder="Enter your password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+              />
+            )}
           />
 
           <CustomButton
             title="Sign In"
-            onPress={handleSubmit}
+            onPress={handleSubmit(onSubmit)}
             isLoading={isLoading}
           />
         </View>
@@ -98,6 +128,6 @@ export default function Signin() {
           </Text>
         </Text>
       </View>
-    </>
+    </View>
   );
 }

@@ -6,11 +6,13 @@ import { CustomInputProps } from "./CustomInput";
 
 export type CustomPasswordInputProps = CustomInputProps & {
   // Any additional props specific to CustomPasswordInput can be added here
+  error?: string;
 };
 
 export default function CustomPasswordInput({
   label,
   className,
+  error,
  ...props
 }: CustomPasswordInputProps) {
   const [isFocused, setIsFocused] = useState(false);
@@ -56,6 +58,7 @@ export default function CustomPasswordInput({
           />
         </TouchableOpacity>
       </View>
+       {error ? <Text className="text-red-500">{error}</Text> : null}
     </View>
   );
 }

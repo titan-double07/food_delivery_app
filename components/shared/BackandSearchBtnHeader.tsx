@@ -14,9 +14,9 @@ export default function BackandSearchBtnHeader({
   return (
     <View className="flex-row justify-between">
       {/* arrow back */}
-      <Pressable onPress={() => router.back()}>
+      {/* <Pressable onPress={() => router.back()}>
         <Ionicons name="arrow-back-outline" size={24} color="black" />
-      </Pressable>
+      </Pressable> */}
 
       {/* title */}
       <View>

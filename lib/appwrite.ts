@@ -2,6 +2,7 @@
 
 import {
   Account,
+  AppwriteException,
   Avatars,
   Client,
   Databases,
@@ -73,7 +74,7 @@ export const appWriteServices = {
         { email, name, accountId: newAccount.$id, avatar: avatarUrl },
       );
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error((error as AppwriteException).message);
     }
   },
 
@@ -87,7 +88,8 @@ export const appWriteServices = {
 
       return session;
     } catch (error) {
-      throw new Error(error as string);
+      console.error("🚀 ~ error:", (error as AppwriteException))
+      throw new Error((error as AppwriteException).message);
     }
   },
 
@@ -106,7 +108,7 @@ export const appWriteServices = {
       );
       return currentUser.documents[0];
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error((error as AppwriteException).message);
     }
   },
 
@@ -148,7 +150,7 @@ export const appWriteServices = {
     try {
       await account.deleteSession({ sessionId: "current" });
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error((error as AppwriteException).message);
     }
   },
 };

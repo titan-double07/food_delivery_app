@@ -4,11 +4,13 @@ import { cn } from "@/lib/utils";
 
 export type CustomInputProps = TextInputProps & {
   label: string;
+  error?: string;
 };
 
 export default function CustomInput({
   label,
   className,
+  error,
   ...props // capture all other TextInput props
 }: CustomInputProps) {
   const [isFocused, setIsFocused] = useState(false);
@@ -34,6 +36,7 @@ export default function CustomInput({
           className,
         )}
       />
+      {error ? <Text className="text-red-500">{error}</Text> : null}
     </View>
   );
 }

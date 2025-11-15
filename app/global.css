@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply scroll-smooth font-quicksand text-dark-100 bg-white;
+    @apply scroll-smooth font-quicksand text-dark-100 bg-white text-sm;
   }
 }
 
