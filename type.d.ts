@@ -1,6 +1,6 @@
 import { Models } from "react-native-appwrite";
 
-export interface MenuItem extends Models.Document {
+export interface MenuItemtype extends Models.Document {
   name: string;
   price: number;
   image_url: string;
@@ -10,6 +10,7 @@ export interface MenuItem extends Models.Document {
   rating: number;
   type: string;
 }
+
 
 export interface Category extends Models.Document {
   name: string;
@@ -22,6 +23,22 @@ export interface User extends Models.Session {
   avatar: string;
 }
 
+/**
+ * Customization option (topping or side)
+ * This represents a single option the user can add
+ */
+export interface CustomizationOption {
+  id: string; // Unique identifier
+  name: string; // Display name (e.g., "Bacon", "Fries")
+  price: number; // Additional cost
+  image: any; // Image source (local or remote)
+  type: "topping" | "side"; // Category
+}
+
+/**
+ * Selected customization
+ * This is what gets stored in the cart
+ */
 export interface CartCustomization {
   id: string;
   name: string;
@@ -29,13 +46,18 @@ export interface CartCustomization {
   type: string;
 }
 
+/**
+ * Cart Item
+ * This is what gets stored in the cart store
+ */
 export interface CartItemType {
-  id: string; // menu item id
-  name: string;
-  price: number;
-  image_url: string;
-  quantity: number;
-  customizations?: CartCustomization[];
+  id: string; // Menu item ID
+  name: string; // Menu item name
+  price: number; // Base price (without customizations)
+  image_url: string; // Item image
+  quantity: number; // How many of this item (with these customizations)
+  customizations?: CartCustomization[]; // Selected toppings/sides
+  cartKey?: string; //Unique key for React rendering
 }
 
 export interface CartStore {
@@ -102,6 +124,8 @@ export interface SignInParams {
 }
 
 export interface GetMenuParams {
-  category: string;
-  query: string;
+  category?: string;
+  query?: string;
+  limit?: number;
+  offset?: number;
 }

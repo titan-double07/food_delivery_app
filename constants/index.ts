@@ -41,6 +41,7 @@ import salad from "@/assets/images/salad.png";
 import success from "@/assets/images/success.png";
 import tomatoes from "@/assets/images/tomatoes.png";
 import signUpGraphic from "@/assets/images/hand_holding_burger.png";
+import { CustomizationOption } from "@/type";
 
 export const CATEGORIES = [
   {
@@ -92,69 +93,92 @@ export const offers = [
   },
 ];
 
-export const sides = [
+export const sides: CustomizationOption[] = [
   {
+    id: "side_fries",
     name: "Fries",
     image: fries,
     price: 3.5,
+    type: "side",
   },
   {
-    name: "Onion Rings",
+    id: "side_onion_rings",
+    name: "Onion rings",
     image: onionRings,
     price: 4.0,
+    type: "side",
   },
   {
+    id: "side_mozarella",
     name: "Mozarella Sticks",
     image: mozarellaSticks,
     price: 5.0,
+    type: "side",
   },
   {
+    id: "side_coleslaw",
     name: "Coleslaw",
     image: coleslaw,
     price: 2.5,
+    type: "side",
   },
   {
+    id: "side_salad",
     name: "Salad",
     image: salad,
     price: 4.5,
+    type: "side",
   },
 ];
-
-export const toppings = [
+export const toppings: CustomizationOption[] = [
   {
+    id: "topping_avocado",
     name: "Avocado",
     image: avocado,
     price: 1.5,
+    type: "topping",
   },
   {
+    id: "topping_bacon",
     name: "Bacon",
     image: bacon,
     price: 2.0,
+    type: "topping",
   },
   {
+    id: "topping_cheese",
     name: "Cheese",
     image: cheese,
     price: 1.0,
+    type: "topping",
   },
   {
+    id: "topping_cucumber",
     name: "Cucumber",
     image: cucumber,
     price: 0.5,
+    type: "topping",
   },
   {
+    id: "topping_mushrooms",
     name: "Mushrooms",
     image: mushrooms,
     price: 1.2,
+    type: "topping",
   },
   {
+    id: "topping_onions",
     name: "Onions",
     image: onions,
     price: 0.5,
+    type: "topping",
   },
   {
+    id: "topping_tomatoes",
     name: "Tomatoes",
     image: tomatoes,
     price: 0.7,
+    type: "topping",
   },
 ];
 

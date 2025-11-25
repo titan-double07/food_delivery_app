@@ -306,8 +306,8 @@ note: adding the prop returnKeytype="search" to the TextInput component would ch
 <!-- #TODO:
 Left over UI from figma design
 [-] Login Successfull drawer
-[ ] Empty State for Search Screen
-[ ] Menu Item Details Screen
+[x] Empty State for Search Screen
+[x] Menu Item Details Screen
 
 Functionality and UX
 [x] Logout functionality
@@ -319,7 +319,7 @@ edit profile ( any screen that makes api calls )
 [ ] light and dark mode support
 [ ] cache optimization for appwrite calls
 [ ] Pull to refresh on the search screen
-[ ] Infinite scroll / pagination on the search screen
+[ ] Animations and transitions
 
 
 
@@ -333,5 +333,8 @@ edit profile ( any screen that makes api calls )
   [ ] Order History Screen
   [ ] Wishlist/Favorites functionality
 
+- [ ] Walk through UI to tell the users what to look for in the app, it would point out the features so that they could try it out
 
  -->
+
+

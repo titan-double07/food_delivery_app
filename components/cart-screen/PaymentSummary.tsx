@@ -8,7 +8,12 @@ import { Text, View } from "react-native";
 export default function PaymentSummary() {
     
     const { items, getTotalItems, getTotalPrice}= useCartStore((state) => state)
-    console.log("🚀 ~ PaymentSummary ~ items:", items)
+    console.log(
+      `\n-------------------------------------------------------\n` +
+      `PaymentSummary ~ items:\n` +
+      JSON.stringify(items, null, 2) +
+      `\n-------------------------------------------------------\n`
+    )
     
     const totalItems = getTotalItems();
     const totalPrice = getTotalPrice();

@@ -1,14 +1,16 @@
 import { useCartStore } from "@/store/cart.store";
-import { MenuItem } from "@/type";
+import { MenuItemtype } from "@/type";
+import { Link } from "expo-router";
 import React from "react";
 import { Image, Platform, Text, TouchableOpacity } from "react-native";
 
 export default function MenuCard({
   item,
 }: {
-  item: MenuItem;
+  item: MenuItemtype;
   }) {
   const { name, image_url, price } = item;
+  
   const addToCart = useCartStore(s=>s.addItem)
   return (
     <TouchableOpacity
@@ -19,6 +21,12 @@ export default function MenuCard({
           : {}
       }
     >
+      <Link
+        href={{
+          pathname: "/menu-item/[id]",
+          params: { id: item.$id },
+        }}
+      >
       <Image
         source={{
           uri: image_url,
@@ -26,6 +34,7 @@ export default function MenuCard({
         className="absolute -top-10 size-32"
         resizeMode="contain"
       />
+      </Link>
       <Text
         className="base-bold mb-2 text-center text-dark-100"
         numberOfLines={1}

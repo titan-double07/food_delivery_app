@@ -1,11 +1,11 @@
-import { useFonts } from "expo-font";
-import "react-native-reanimated";
-import "./global.css";
-import { useAuthStore } from "@/store/auth.store";
-import { SplashScreen, Stack } from "expo-router";
-import { useEffect } from "react";
-import Toast from "react-native-toast-message";
 import CustomAlert from "@/components/shared/CustomAlert";
+import { useAuthStore } from "@/store/auth.store";
+import { useFonts } from "expo-font";
+import { Redirect, router, SplashScreen, Stack } from "expo-router";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import "./global.css";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent auto-hiding the splash until fonts are ready
@@ -42,35 +42,20 @@ export default function RootLayout() {
     return null; // don't render UI until fonts are ready
   }
 
-  // to Resume the Last Visited Page
-  // const router = useRouter();
-  // const segments = useSegments();
-
-  // useEffect(() => {
-  //   // Save the current route whenever it changes
-  //   if (segments.length > 0) {
-  //     AsyncStorage.setItem("lastRoute", "/" + segments.join("/"));
-  //   }
-  // }, [segments]);
-
-  // useEffect(() => {
-  //   // On first load, restore last route
-  //   (async () => {
-  //     const lastRoute = await AsyncStorage.getItem("lastRoute");
-  //     if (lastRoute) {
-  //       router.replace(lastRoute);
-  //     }
-  //   })();
-  // }, []);
-
   // 👇 Decide where to start
   // if (isAuthenticated) {
-  //   return <Redirect href="/(tabs)/search" />;
+  //   return router.push("../menu-item/68ea6c51002b6a437056");
   // }
+
+  // 68ea6c51002b6a437056
 
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
+        {/* <Stack.Screen
+          name="menu-item/[id]"        
+          initialParams={{ id: "68ea6c51002b6a437056" }}
+        /> */}
         <Stack.Screen name="(tabs)" />
       </Stack>
       <Toast />

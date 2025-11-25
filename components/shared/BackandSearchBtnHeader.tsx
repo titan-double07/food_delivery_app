@@ -9,14 +9,13 @@ type BackandSearchBtnHeaderProps = {
 export default function BackandSearchBtnHeader({
   title,
 }: BackandSearchBtnHeaderProps) {
-
-  const router = useRouter()
+  const router = useRouter();
   return (
     <View className="flex-row justify-between">
       {/* arrow back */}
-      {/* <Pressable onPress={() => router.back()}>
+      <Pressable onPress={() => router.back()}>
         <Ionicons name="arrow-back-outline" size={24} color="black" />
-      </Pressable> */}
+      </Pressable>
 
       {/* title */}
       <View>
@@ -24,9 +23,11 @@ export default function BackandSearchBtnHeader({
       </View>
 
       {/* search btn */}
-      <Pressable onPress={()=>{
-        router.push("/(tabs)/search")
-      }}>
+      <Pressable
+        onPress={() => {
+          router.push("/(tabs)/search");
+        }}
+      >
         <Ionicons name="search" size={24} color="black" />
       </Pressable>
     </View>
