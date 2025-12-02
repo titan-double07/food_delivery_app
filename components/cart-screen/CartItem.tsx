@@ -16,7 +16,7 @@ import {
 export default function CartItem({ item }: { item: CartItemType }) {
   const [isChecked, setChecked] = useState(false);
 
-  const { removeItem, increaseQty, decreaseQty } = useCartStore((s) => s);
+  const { removeItem, increaseQty, decreaseQty, toggleItemSelection, isItemSelected } = useCartStore((s) => s);
 
   // Calculate item total price (base + customizations) × quantity
   const customizationsPrice =
@@ -28,8 +28,8 @@ export default function CartItem({ item }: { item: CartItemType }) {
       {/* checkbox */}
       <Checkbox
         className="m-2 "
-        value={isChecked}
-        onValueChange={setChecked}
+        value={isItemSelected(item.cartKey!)}
+        onValueChange={()=>toggleItemSelection(item.cartKey!)}
         color={colors.light.primary}
       />
       {/* image */}

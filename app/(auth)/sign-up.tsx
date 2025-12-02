@@ -63,7 +63,11 @@ export default function SignUp() {
       showToast("success", "Success", "Account created successfully!");
       // setTimeout(() => router.replace("/sign-in"), 1500);
     } catch (error: any) {
-      showAlert("error", "Sign Up Failed", error.message);
+      showAlert({
+        type: "error",
+        title: "Sign Up Failed",
+        message: error.message,
+      });
     } finally {
       setIsLoading(false);
     }

@@ -318,7 +318,7 @@ orders,
 edit profile ( any screen that makes api calls )
 [ ] light and dark mode support
 [ ] cache optimization for appwrite calls
-[ ] Pull to refresh on the search screen
+[x] Pull to refresh on the search screen
 [ ] Animations and transitions
 
 

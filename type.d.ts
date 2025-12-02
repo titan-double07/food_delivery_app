@@ -62,13 +62,27 @@ export interface CartItemType {
 
 export interface CartStore {
   items: CartItemType[];
+  selectedItems: string[]; // ← NEW: Array of selected cart keys
+
+  // Item management
   addItem: (item: Omit<CartItemType, "quantity">) => void;
-  removeItem: (id: string, customizations: CartCustomization[]) => void;
-  increaseQty: (id: string, customizations: CartCustomization[]) => void;
-  decreaseQty: (id: string, customizations: CartCustomization[]) => void;
+  removeItem: (id: string, customizations?: CartCustomization[]) => void;
+  increaseQty: (id: string, customizations?: CartCustomization[]) => void;
+  decreaseQty: (id: string, customizations?: CartCustomization[]) => void;
   clearCart: () => void;
+
+  // Selection management (NEW)
+  toggleItemSelection: (cartKey: string) => void;
+  selectAllItems: () => void;
+  deselectAllItems: () => void;
+  isItemSelected: (cartKey: string) => boolean;
+  removeSelectedItems: () => void;
+
+  // Calculations
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getSelectedItemsTotal: () => number; // ← NEW
+  getSelectedItemsCount: () => number; // ← NEW
 }
 
 interface TabBarIconProps {

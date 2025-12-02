@@ -50,18 +50,18 @@ export default function Signin() {
 
         setTimeout(() => router.replace("/(tabs)"), 1000);
       } else {
-        showAlert(
-          "error",
-          "Sign In Failed",
-          "Failed to sign in. Please try again.",
-        );
+        showAlert({
+          type: "error",
+          title: "Sign In Failed",
+          message: "Failed to sign in. Please try again.",
+        });
       }
     } catch (error: any) {
-      showAlert(
-        "error",
-        "Sign In Failed",
-        error.message || "Failed to sign in. Please try again.",
-      );
+      showAlert({
+        type: "error",
+        title: "Sign In Failed",
+        message: error.message || "Failed to sign in. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }

@@ -1,9 +1,10 @@
+import { useAlertStore } from "@/store/alert-store";
 import React, { useEffect, useRef } from "react";
-import { Modal, View, Text, TouchableOpacity, Animated } from "react-native";
-import { useAlertStore } from "@/store/alert.store";
+import { Animated, Modal, Text, TouchableOpacity, View } from "react-native";
 
 export default function CustomAlert() {
-  const { visible, type, title, message, hideAlert } = useAlertStore();
+  const { visible, type, title, message, hideAlert, onConfirm, hideCancel } =
+    useAlertStore();
   const scaleValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -95,14 +96,31 @@ export default function CustomAlert() {
               </Text>
 
               {/* Button */}
-              <TouchableOpacity
-                onPress={hideAlert}
-                className={`${colors.button} rounded-xl px-6 py-3`}
-              >
-                <Text className="text-center text-base font-semibold text-white">
-                  OK
-                </Text>
-              </TouchableOpacity>
+              <View className="flex flex-row items-center justify-between gap-5">
+                {!hideCancel && (
+                  <TouchableOpacity
+                    onPress={hideAlert}
+                    className={`${colors.border} flex-1 rounded-xl border px-6 py-3`}
+                  >
+                    <Text
+                      className={`text-center text-base font-semibold ${colors.text}`}
+                    >
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  onPress={() => {
+                    hideAlert();
+                    onConfirm && onConfirm();
+                  }}
+                  className={`${colors.button} flex-1 rounded-xl px-6 py-3`}
+                >
+                  <Text className="text-center text-base font-semibold text-white">
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
         </Animated.View>

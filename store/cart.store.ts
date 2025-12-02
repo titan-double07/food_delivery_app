@@ -4,21 +4,21 @@ import { showToast } from "@/utils/toast"; // Import the toast utility
 /**
  * Generate a unique cart key for an item + customizations
  * This ensures items with same ID but different customizations get unique keys
- * 
+ *
  * @param itemId - The base item ID
  * @param customizations - Array of customizations
  * @returns Unique string key for this specific configuration
- * 
+ *
  * @example
  * getCartItemKey('burger_001', [bacon, cheese])
  * // Returns: 'burger_001_topping_bacon_topping_cheese'
- * 
+ *
  * getCartItemKey('burger_001', [cheese, bacon])
  * // Returns: 'burger_001_topping_bacon_topping_cheese' (same order after sorting)
  */
 export function getCartItemKey(
   itemId: string,
-  customizations: CartCustomization[] = []
+  customizations: CartCustomization[] = [],
 ): string {
   // If no customizations, just return the item ID
   if (customizations.length === 0) {
@@ -28,8 +28,8 @@ export function getCartItemKey(
   // Sort customizations by ID to ensure consistent key regardless of selection order
   const sortedCustomizations = [...customizations]
     .sort((a, b) => a.id.localeCompare(b.id))
-    .map(c => c.id)
-    .join('_');
+    .map((c) => c.id)
+    .join("_");
 
   // Combine item ID with sorted customization IDs
   return `${itemId}_${sortedCustomizations}`;
@@ -56,7 +56,6 @@ function areCustomizationsEqual(
   return aSorted.every((item, idx) => item.id === bSorted[idx].id);
 }
 
-
 /**
  * Cart store
  * @see https://github.com/pmndrs/zustand#cart-example
@@ -64,6 +63,8 @@ function areCustomizationsEqual(
 export const useCartStore = create<CartStore>((set, get) => ({
   // initial state
   items: [],
+  // track check items
+  selectedItems: [],
 
   /**
    * Add an item to the cart
@@ -147,7 +148,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
     // Show toast notification for item removal
     if (itemToRemove) {
       showToast(
-        "info",
+        "error",
         "Removed from Cart",
         `${itemToRemove.name} has been removed`,
       );
@@ -227,14 +228,76 @@ export const useCartStore = create<CartStore>((set, get) => ({
       }
     }
   },
+  /**
+   * Toggle item selection (checkbox)
+   * @param cartKey - The unique cart key for the item
+   */
+  toggleItemSelection: (cartKey: string) => {
+    const selectedItems = get().selectedItems;
+    const isSelected = selectedItems.includes(cartKey);
+
+    if (isSelected) {
+      // Deselect
+      set({
+        selectedItems: selectedItems.filter((key) => key !== cartKey),
+      });
+    } else {
+      // Select
+      set({
+        selectedItems: [...selectedItems, cartKey],
+      });
+    }
+  },
 
   /**
-   * Clear the cart
+   * Select all items
+   */
+  selectAllItems: () => {
+    const allCartKeys = get()
+      .items.map((item) => item.cartKey)
+      .filter(Boolean) as string[];
+    set({ selectedItems: allCartKeys });
+  },
+
+  /**
+   * Deselect all items
+   */
+  deselectAllItems: () => {
+    set({ selectedItems: [] });
+  },
+
+  /**
+   * Check if an item is selected
+   * @param cartKey - The unique cart key
+   */
+  isItemSelected: (cartKey: string) => {
+    return get().selectedItems.includes(cartKey);
+  },
+  /**
+   * Remove all selected items
+   */
+  removeSelectedItems: () => {
+    const selectedKeys = get().selectedItems;
+    const remainingItems = get().items.filter(
+      (item) => !selectedKeys.includes(item.cartKey!),
+    );
+
+    set({
+      items: remainingItems,
+      selectedItems: [],
+    });
+
+    showToast(
+      "success",
+      "Items Removed",
+      `${selectedKeys.length} item(s) removed from cart`,
+    );
+  },
+  /**
+   * Clear entire cart
    */
   clearCart: () => {
-    set({ items: [] });
-
-    // Show toast notification
+    set({ items: [], selectedItems: [] });
     showToast("info", "Cart Cleared", "All items have been removed");
   },
 
@@ -259,5 +322,27 @@ export const useCartStore = create<CartStore>((set, get) => ({
         ) ?? 0;
       return total + item.quantity * (base + customPrice);
     }, 0),
-}));
+  /**
+   * Get total price of selected items only
+   */
+  getSelectedItemsTotal: () => {
+    const selectedKeys = get().selectedItems;
+    return get().items.reduce((total, item) => {
+      // Only count if item is selected
+      if (!selectedKeys.includes(item.cartKey!)) return total;
 
+      const base = item.price;
+      const customPrice =
+        item.customizations?.reduce(
+          (s: number, c: CartCustomization) => s + c.price,
+          0,
+        ) ?? 0;
+      return total + item.quantity * (base + customPrice);
+    }, 0);
+  },
+
+  /**
+   * Get number of selected items
+   */
+  getSelectedItemsCount: () => get().selectedItems.length,
+}));
