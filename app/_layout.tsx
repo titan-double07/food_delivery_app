@@ -1,7 +1,7 @@
 import CustomAlert from "@/components/shared/CustomAlert";
 import { useAuthStore } from "@/store/auth.store";
 import { useFonts } from "expo-font";
-import { Redirect, router, SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
@@ -43,9 +43,9 @@ export default function RootLayout() {
   }
 
   // 👇 Decide where to start
-  // if (isAuthenticated) {
-  //   return router.push("../menu-item/68ea6c51002b6a437056");
-  // }
+//  if (isAuthenticated) {
+//    return router.push("/(checkout)/delivery-address");
+//  }
 
   // 68ea6c51002b6a437056
 
@@ -56,6 +56,7 @@ export default function RootLayout() {
           name="menu-item/[id]"        
           initialParams={{ id: "68ea6c51002b6a437056" }}
         /> */}
+        {/* <Stack.Screen name="/(checkout)/delivery-address" /> */}
         <Stack.Screen name="(tabs)" />
       </Stack>
       <Toast />

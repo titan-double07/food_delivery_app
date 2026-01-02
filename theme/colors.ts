@@ -1,3 +1,4 @@
+//app/theme/colors.ts
 export const colors = {
   light: {
     primary: "#FE8C00",
